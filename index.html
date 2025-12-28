@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Round Boundary</title>
+<title>Rounded Square Boundary</title>
 <style>
   body, html {
     margin: 0;
@@ -15,23 +15,24 @@
     background-color: #f0f0f0; /* optional background */
   }
 
-  .circle-frame {
-    width: 90vw;            /* adjust size */
-    height: 90vw;           /* same as width for perfect circle */
-    max-height: 90vh;       /* optional: prevent overflow on tall screens */
-    border: 5px solid #000; /* border thickness and color */
-    border-radius: 50%;     /* makes it a circle */
+  .rounded-square {
+    width: 90vw;              /* almost full width */
+    height: 90vh;             /* almost full height */
+    border: 5px solid #000;   /* border thickness and color */
+    border-radius: 30px;      /* round corners */
     display: flex;
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;   /* includes border in size */
+    background-color: #fff;   /* optional inside color */
   }
 </style>
 </head>
 <body>
 
-<div class="circle-frame">
+<div class="rounded-square">
   <!-- Your content goes here -->
-  <p>Round Boundary</p>
+  <p>Rounded Square Boundary</p>
 </div>
 
 </body>
