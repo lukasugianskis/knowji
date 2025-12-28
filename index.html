@@ -1,12 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Full SVG Frame</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Round Boundary</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0; /* optional background */
+  }
+
+  .circle-frame {
+    width: 90vw;            /* adjust size */
+    height: 90vw;           /* same as width for perfect circle */
+    max-height: 90vh;       /* optional: prevent overflow on tall screens */
+    border: 5px solid #000; /* border thickness and color */
+    border-radius: 50%;     /* makes it a circle */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+</style>
 </head>
 <body>
-  <img src="frame.svg" alt="Frame" class="frame-svg">
+
+<div class="circle-frame">
+  <!-- Your content goes here -->
+  <p>Round Boundary</p>
+</div>
+
 </body>
 </html>
