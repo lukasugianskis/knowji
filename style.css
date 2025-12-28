@@ -1,14 +1,1 @@
-/* Make body take full height & remove default margin */
-body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
 
-/* SVG fills the whole screen */
-.frame-svg {
-  width: 100vw;   
-  height: 100vh;  
-  display: block; 
-  object-fit: fill; /* optional: stretch to fill exactly */
-}
