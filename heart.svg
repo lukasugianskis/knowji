@@ -1,0 +1,31 @@
+<svg width="75" height="69" viewBox="0 0 75 69" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_ii_409_51)">
+<path d="M74.3303 29.1055C73.9368 44.0559 53.5176 60.8767 42.8559 67.7687C42.5306 67.979 42.1111 67.9669 41.7849 67.758C9.52294 47.1031 8.87534 29.0721 10.3303 23.1055C11.5495 18.1055 18.4303 10.6055 26.8303 10.6055C34.1805 10.6055 39.2592 14.4338 41.5305 17.0657C41.9619 17.5656 42.7582 17.6114 43.2212 17.1406C48.3333 11.9424 54.998 10.6055 57.8303 10.6055C63.4969 10.4388 74.7303 13.9055 74.3303 29.1055Z" fill="#6572E4"/>
+</g>
+<g filter="url(#filter1_f_409_51)">
+<path d="M33.3787 15.4747C27.2224 10.7695 22.0102 12.7691 18.2194 14.9336C11.7217 18.6437 12.0792 24.9589 13.3427 27.9194C14.9592 31.7068 20.6979 35.0869 29.0466 30.0837C37.1725 25.2139 36.631 18.7211 33.3787 15.4747Z" fill="#A2ABFA"/>
+</g>
+<defs>
+<filter id="filter0_ii_409_51" x="7.71406" y="8.39985" width="71.6297" height="62.5208" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="-5" dy="-12"/>
+<feGaussianBlur stdDeviation="1.1"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.31 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_409_51"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dx="5" dy="3"/>
+<feGaussianBlur stdDeviation="4.7"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.363324 0 0 0 0 0.424681 0 0 0 0 0.96274 0 0 0 1 0"/>
+<feBlend mode="normal" in2="effect1_innerShadow_409_51" result="effect2_innerShadow_409_51"/>
+</filter>
+<filter id="filter1_f_409_51" x="0.00156212" y="-0.000146866" width="48.2" height="45.2" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="6.3" result="effect1_foregroundBlur_409_51"/>
+</filter>
+</defs>
+</svg>
