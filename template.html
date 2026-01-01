@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Intellecta</title>
+
+<link rel="icon" href="webicon.svg">
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDjBxNmeQ6IRi8GNwiDE8nQZnlBP_9PiEs",
+  authDomain: "intellecta-bae6d.firebaseapp.com",
+  projectId: "intellecta-bae6d"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+</script>
+
+<!-- ===== YOUR FULL CSS GOES HERE (UNCHANGED) ===== -->
+<style>
+/* ====== LOAD LOCAL APTOS FONT ====== */
+@font-face {
+    font-family: "Aptos";
+    src: url("Microsoft Aptos Fonts 2/Aptos-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Aptos";
+    src: url("Microsoft Aptos Fonts 2/Aptos-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Aptos";
+    src: url("Microsoft Aptos Fonts 2/Aptos-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+}
+
+/* ====== GLOBAL STYLES ====== */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    background-color: #ffffff;
+    font-family: "Aptos", "Segoe UI", sans-serif;
+}
+
+/* OUTER FRAME */
+.outermargins {
+    position: fixed;
+    top: 62.5px;
+    right: 10px;
+    width: 95vw;
+    height: 91vh;
+    border: 2px solid #e6e6e6;
+    border-radius: 20px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    transition: width 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+}
+.outermargins.expanded { width: 85vw; }
+
+.innerContent {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    padding: 20px 0;
+    width: 100%;
+}
+
+.innerContent {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    padding: 20px 0;
+    width: 100%;
+    position: relative;  /* for pseudo-element positioning */
+}
+
+/* Top fade overlay using an image */
+.innerContent::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0.5;
+    height: 200px;  /* fade height */
+    border-radius: 19px;
+    background: url('background1.png') no-repeat center center;
+    background-size: cover;
+
+    /* fade out to transparent */
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+
+    filter: blur(8px);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.innerContent.shifted .chapter-title,
+.innerContent.shifted #resetProgress,
+.innerContent.shifted .custom-dropdown,
+.innerContent.shifted .dropdown-label,
+.innerContent.shifted .content-toggle {
+    
+    transform: translateX(36px);
+    transition: transform 0.25s ease; /* smooth for expand and collapse */
+}
+
+/* TOGGLE BUTTON */
+#toggleOuter { position: absolute; bottom: 668px; left: 10px; width: 48px; height: 48px; border-radius: 12px; border: 0; background: transparent; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 1; }
+#toggleOuter::before { content: ''; position: absolute; top:50%; left:50%; width:100%; height:100%; transform: translate(-50%,-50%); background: rgba(0,0,0,0.1); border-radius:12px; opacity:0; transition:opacity 0.2s; z-index:-1; }
+#toggleOuter:hover::before { opacity:0.6; }
+#toggleIcon { width:24px; height:24px; transition: transform 0.4s ease; }
+#toggleIcon.rotated { transform: rotate(180deg); }
+
+/* QUESTION BOX STYLE */
+.question-box {
+    width: 60%;
+    background-color: #fff;
+    border-radius: 25px;
+    border: 2.5px solid #e6e6e6;
+    outline: 4px solid transparent;   
+    outline-offset: -2px;
+    transition: outline-color 0.3s ease, outline-offset 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 30px;
+    margin-bottom: 30px;
+    flex-shrink: 0;           
+    box-sizing: border-box;   
+}
+
+/* Header Tags */
+.question-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    position: relative;
+    left: -15px;
+    top: -15px;
+    width: 100%;
+}
+
+.question-header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.question-header > .qnum {
+    font-size: 30px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 700;
+    background-color: transparent;
+    color: #000000;
+}
+
+.tags {
+    display: flex;
+    gap: 8px; 
+}
+
+.tag {
+    font-size: 14px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background-color: #e3e3e3;
+    color: #000000;
+    font-weight: 510;
+}
+
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown button */
+.dropdown-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    position: absolute;
+    right: -30px;
+    bottom: -65px;
+
+    width: 220px;              /* BIGGER BOX */
+    padding: 10px;             /* space inside */
+    gap: 6px;
+
+    border: 2px solid #e6e6e6;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-radius: 14px;
+
+    display: flex;
+    flex-direction: column;
+
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 1000;
+}
+
+/* Show dropdown */
+.dropdown.show .dropdown-content {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    visibility: visible;
+}
+
+/* Dropdown buttons styling */
+.dropdown-content button {
+    background: #fff;
+    border: 0px solid #e6e6e6;
+    padding: 8px 10px;         /* SMALLER BUTTONS */
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    position: relative;         /* needed for pseudo-element hover effect */
+    transition: background 0.15s ease, color 0.2s ease;
+}
+
+.dropdown-content button::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -1px;
+    right: -1px;
+    bottom: -5px;
+    background-color: rgba(0,0,0,0.05);  /* subtle hover highlight */
+    border-radius: 10px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.dropdown-content button:hover {
+    background: #eeeeee;          /* your existing hover */
+    border-radius: 10px;          /* keep original shape */
+    line-height: 1;
+    color: #4b4b4b;               /* optional, like icon-right */
+}
+
+.dropdown-content button:hover::before {
+    opacity: 1;                   /* subtle highlight effect */
+}
+
+/* Report form modal */
+.report-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right:0; bottom:0;
+    background: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+.report-modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.report-modal-content label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.report-modal-content textarea {
+    resize: none;
+    width: 100%;
+    height: 60px;
+}
+
+.report-modal-content button {
+    padding: 8px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: #fff;
+}
+
+/* Question Text */
+.question-text { 
+    font-weight: 400; 
+    margin-bottom: 0px; 
+    line-height: 1.4; 
+    color: #525151; 
+    position: relative; 
+    left: -5px; 
+    top: -10px;
+    font-size: 110%; 
+    margin-right: -20px; 
+}
+
+/* Options */
+.options { display: flex; flex-direction: column; gap: 2px; }
+.option {
+    position: relative; 
+    color : #525151;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+.option-circle:hover { background-color: #fff; border-color: #c9c8c8; }
+
+.option-circle {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #e6e6e6;
+    border-radius: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+    color: #848484;
+}
+
+.option-circle.correct {
+    transform: scale(1.1);
+    transition: background-color 0.4s ease, border-color 0.4s ease, transform 0.2s ease;
+    background-color: #4CAF50;
+    border: 4px solid #c9e9d0;
+    color: #fff;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.option-circle.wrong {
+    transform: scale(1.1);
+    transition: background-color 0.4s ease, border-color 0.4s ease, transform 0.2s ease;
+    background-color: #F44336;
+    border: 4px solid #e9c9c9;
+    color: #fff;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.question-box.correct {
+    outline: 4px solid #a7dbb4;
+    transition: outline-color 0.3s ease, outline-offset 0.3s ease;
+    outline-offset: -2px;        
+}
+
+.question-box.wrong {
+    outline: 2.5px solid #e6e6e6; 
+    transition: outline-color 0.3s ease, outline-offset 0.3s ease;
+    outline-offset: -2px;
+}
+
+/* ====== FORCE APTOS FONT AND FIX BOLD FOR QUESTION NUMBER ====== */
+.question-box, 
+.question-box * {
+    font-family: "Aptos", "Segoe UI", sans-serif !important;
+}
+
+/* ===== SHORT ANSWER QUESTION ===== */
+.short-answer {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.short-answer textarea {
+    width: 101.5%;
+    height: 160px;
+    resize: none;
+    padding: 12px;
+    font-family: "Aptos", sans-serif;
+    font-size: 17px;
+    color: #606060;
+    border-radius: 16px;
+    border: 0px solid #e6e6e6;
+    background-color: #f2f2f2;
+    outline: none;
+    box-sizing: border-box;
+    position: relative;
+    left: -8px;
+    top: -6px;
+}
+
+.short-answer textarea:focus {
+    border-color: #44b6f3;
+}
+
+.check-answer-btn {
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    background: #e2f4fe;
+    color: #44b6f3;
+}
+
+.check-answer-btn:hover {
+    background: #cceafc;
+}
+
+/* ===== PREDICTED GRADE PANEL (WRITTEN ONLY) ===== */
+.predicted-grade {
+    margin-top: 14px;
+    padding: 18px;
+    border-radius: 18px;
+    background: #f5faf5;
+    border: 2px solid #e1efe1;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.45s ease, opacity 0.3s ease;
+}
+
+.predicted-grade.show {
+    max-height: 500px;
+    opacity: 1;
+}
+
+/* grade circle */
+.grade-circle {
+    min-width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 6px solid #3ba55d;
+    color: #3ba55d;
+    font-weight: 700;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* mark scheme rows */
+.grade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.grade-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ecf7ec;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-weight: 600;
+    color: #2e6b3f;
+}
+
+.grade-row.wrong {
+    background: #fdeeee;
+    color: #a63d3d;
+}
+
+.grade-row .icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #3ba55d;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.grade-row.wrong .icon {
+    background: #e04b4b;
+}
+
+
+.qnum {
+    position: relative;
+    left: 10px;
+    font-weight: 700 !important;
+    font-size: 20px !important; /* adjust size as needed */
+}
+.tag {
+    position: relative;
+    left: 10px;
+    font-weight: 600 !important;
+}
+
+.clickable-square {
+    padding: 0;
+    background-color: #f0f0f0; /* grey square */
+    width: 38px; /* adjust as needed */
+    height: 38px; /* adjust as needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 14px; /* optional rounded corners */
+    cursor: pointer;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+    position: relative;
+    left: 30px
+}
+
+.clickable-square:hover {
+    background-color: #e0e0e0; /* dims on hover */
+}
+
+.clickable-square img {
+    width: 16px; /* adjust as needed */
+    height: 16px;
+}
+
+.report-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* pushes icon right */
+    width: 100%;
+
+    padding: 6px 10px;
+    margin: 0;
+    border: none;
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* TEXT — change font + boldness here */
+.report-text {
+    font-family: "Aptos", sans-serif;
+    font-size: 14px;
+    font-weight: 600; /* change this */
+    color: #333;
+    margin-left: 120px;
+}
+
+/* ICON */
+.report-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.chapter-title {
+    font-size: 40px;        /* text size */
+    font-weight: 700;       /* boldness */
+    color: #222;            /* text color */
+    text-align: center;     /* horizontal position */
+    margin-top: 90px;         /* spacing above/below */
+    position: relative;     
+    top: -5px;              /* move up/down */
+    left: -115px;              /* move left/right */
+    letter-spacing: -2px;
+}
+
+.question-image {
+    display: block;          /* makes margin auto work */
+    max-width: 100%;         /* don’t exceed container width */
+    height: auto;
+    margin: 10px auto;       /* top/bottom spacing + auto left/right centers it */
+    border-radius: 12px;     /* optional rounding */
+}
+
+/* ANSWERS MODAL */
+.answers-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0);  /* start transparent */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;  /* disable clicks when hidden */
+    transition: background 0.3s ease, opacity 0.3s ease;
+}
+
+.answers-modal.show {
+    opacity: 1;
+    pointer-events: auto;
+    background: rgba(0,0,0,0.6); /* dim background when visible */
+}
+
+.answers-modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    border-color: #e6e6e6;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    transform: scale(0.9);         /* start slightly smaller */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+.answers-modal.show .answers-modal-content {
+    transform: scale(1);           /* scale to normal size */
+    opacity: 1;
+}
+
+.answers-modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    border: 4px solid #e6e6e6;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+}
+
+.answers-modal-content h3 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.answers-modal-content p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.answer-frame {
+    background: #e6f8e6;          /* light green background */
+    border: 2px solid rgb(188, 231, 190);    /* green border */
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+    position: relative;
+    top: 6px;
+}
+.answer-frame p {
+    margin: 0;
+    color: #1b5e20;               /* dark green text */
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.close-answers {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/*.certified-frame {
+    display: flex;
+    align-items: left;
+    gap: 10px;               
+    background-color: #d3dafd; 
+    border: 0px solid #bce7be; 
+    border-radius: 12px;
+    padding: 8px 12px;
+    width: fit-content;       
+    margin: 10px 0;      
+    position: relative;
+    left: -287px; 
+    top: -20px;            
+}
+
+.certified-icon {
+    width: 24px;  
+    height: 24px;
+    position: relative;
+    top: -3px;      
+}
+
+.certified-text {
+    font-family: "Aptos", sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #244081;  
+    position: relative;
+    left: -3px;     
+    top: 1px;
+} */
+
+.sidebar-logo {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+    text-decoration: none;
+}
+
+.sidebar-logo img {
+    width: 30px;
+    height: 30px;
+    position: relative;
+    top: 5px;
+    right: -5px;
+}
+
+.sidebar-text {
+    font-family: "Aptos", sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #000;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+    position: relative;
+    top: 5px;
+}
+
+/* visible when expanded */
+.sidebar-logo.show-text .sidebar-text {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+#splash {
+    position: fixed;
+    inset: 0;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+#splash img {
+    width: 160px;
+    height: 160px;
+    animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.8; transform: scale(0.98); }
+    50% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0.8; transform: scale(0.98); }
+}
+
+/* fade out */
+#splash.hide {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+}
+
+/* Custom filter dropdowns */
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-dropdown .dropdown-btn {
+    background: #f6f5f5;
+    border: 2.5px solid #e6e6e6;
+    border-radius: 14px;
+    padding: 6px 12px;
+    height: 48px;
+    width: 175px;
+    font-family: "Aptos", sans-serif;
+    font-weight: 600;
+    font-size: 17;
+    cursor: pointer;
+    min-width: 130px;
+    text-align: left;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+    position: relative;
+    left: -229px;
+    top: -6px;
+}
+
+.custom-dropdown .dropdown-btn:hover {
+    background-color: #eeecec;
+}
+
+
+
+
+
+.custom-dropdown .dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: -229px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    background: #fff;
+    border: 2px solid #e6e6e6;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+    width: 150px;        /* match button width */
+    height: 105;         /* grows to fit all buttons */
+    max-height: none;     /* remove max-height */
+    overflow: visible;    /* allow full expansion */
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10000;
+}
+
+#boardDropdown .dropdown-content {
+    height: 105px;   /* match or customize */
+    z-index: 999999;
+}
+
+#paperDropdown .dropdown-content {
+    height: 145px;
+    z-index: 999999;
+}
+
+.custom-dropdown .dropdown-content button {
+    width: 160px;
+    height: 40px;               /* fixed height */
+    padding: 8px 12px;          /* keep consistent */
+    text-align: left;
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    left: -5.5px;
+    box-sizing: border-box;     /* include border in size */
+}
+
+/* Show dropdown */
+.custom-dropdown.show .dropdown-content {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* Hover effect */
+.custom-dropdown .dropdown-content button:hover {
+    background-color: #f5f3f3;
+    /* NO height or width change! */
+}
+
+.dropdown-label {
+    font-family: "Aptos", sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 6px;
+    position: relative;
+    left: -225px;
+    top: -4px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  width: 59.5%; /* make it fill the parent */
+  margin: 30px 0; /* spacing above/below */
+  color: #1c0505; /* text color */
+  font-weight: 600; 
+  font-size: 16px; /* adjust text size */
+  margin: 30px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1; /* make it stretch equally on both sides */
+  height: 1.75px; /* line thickness */
+  background-color: #ededed; /* line color */
+}
+
+#resetProgress {
+    display: inline-flex;      /* keeps content centered */
+    justify-content: center;
+    align-items: center;
+    width: 48px;               /* fixed width */
+    height: 48px;              /* fixed height */
+    padding: 0;
+    box-sizing: border-box;    /* include padding/border in size */
+    position: relative;
+    top: -35px;
+    left: -12px;
+}
+#resetProgress img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    display: block;
+}
+
+#resetProgress {
+    outline: none;           /* remove focus outline */
+    box-shadow: none;        /* remove shadow */
+    border-width: 2.5px;     /* set border width */
+    border-color: #e6e6e6;   /* set border color */
+    border-style: solid;     /* make sure border is visible */
+    flex: 0 0 auto;          /* prevent flex from resizing */
+}
+
+#resetProgress:focus,
+#resetProgress:active {
+    outline: none;           /* remove focus outline */
+    box-shadow: none;        /* remove shadow */
+    border-width: 2.5px;     /* set border width */
+    border-color: #e6e6e6;   /* set border color */
+    border-style: solid;     /* make sure border is visible */
+    flex: 0 0 auto;   
+}
+
+@keyframes spinFast {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#resetProgress.spin img {
+    animation: spinFast 0.4s ease-in-out;
+}
+
+.report-btn {
+    font-family: "Aptos", sans-serif;  /* change font */
+    font-size: 16px;                    /* change size */
+    font-weight: 700;                   /* boldness */
+    color: #000000;                     /* text color */
+    text-transform: uppercase;          /* optional uppercase */
+    letter-spacing: 0.5px;              /* optional spacing */
+    padding: 8px 12px;                  /* spacing inside button */
+    cursor: pointer;
+    position: relative;
+}
+
+.report-text {
+    order: 1;         /* ensures text stays first in flex layout */
+    margin-right: 10px; /* pushes the image to the right */
+}
+
+.content-toggle {
+    display: flex;
+    gap: 0px;
+    margin-bottom: 10px;
+    margin-top: -30px;
+}
+
+.toggle-btn {
+    padding: 6px 14px;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 18px;
+    font-family: "Aptos", "Segoe UI", sans-serif;
+    color: #696969;
+    position: relative;
+    left: -224px;
+    top: 31px;
+    overflow: visible;
+}
+
+/* Hover background highlight */
+.toggle-btn::before {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: 0px;
+    right: 0px;
+    bottom: -3px;
+    background-color: #efefef;
+    border-radius: 14px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.toggle-btn:hover::before {
+    opacity: 1;
+}
+
+/* Underline pseudo-element for hover and active separately */
+.toggle-btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -11px; /* 5px below text */
+    width: 100%;
+    height: 2px; /* thickness of underline */
+    background-color: #a5a4a4; /* default hover color */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.toggle-btn:hover::after {
+    opacity: 1;
+}
+
+/* Active button styles */
+.toggle-btn.active {
+    color: #1d6fd2; /* text color for current page */
+}
+
+.toggle-btn.active::after {
+    background-color: #1d6fd2; /* underline color for active page */
+    opacity: 1; /* always visible */
+}
+
+.toggle-btn .icon {
+    width: 18px;   /* smaller width */
+    height: 18px;  /* smaller height */
+    object-fit: contain;
+    position: relative;
+    top: 3.5px;
+    left: -2px;
+}
+
+.toggle-btn.active .icon {
+    filter: invert(33%) sepia(92%) saturate(4519%) hue-rotate(197deg) brightness(95%) contrast(97%);
+}
+
+.toggle-btn .icon {
+    width: 20px; /* adjust size */
+    height: 20px;
+    filter: grayscale(100%) brightness(70%); /* gray tint */
+    transition: filter 0.2s ease;
+}
+
+.divider1 {
+  display: flex;
+  align-items: center;
+  width: 59.5%; /* make it fill the parent */
+  margin: 30px 0; /* spacing above/below */
+  color: #1c0505; /* text color */
+  font-weight: 600; 
+  font-size: 16px; /* adjust text size */
+  margin-top: 10px;
+  position: relative;
+  left: 0px;
+}
+
+.divider1::before {
+  content: '';
+  flex: 1;
+  height: 50px; /* line thickness */
+  background-color: rgb(216, 227, 252);
+  border-top-left-radius: 13px;
+  border-bottom-left-radius: 13px;
+}
+
+.divider1::after {
+  content: '';
+  flex: 1;
+  height: 50px;
+  background-color: rgb(216, 227, 252);
+  border-top-right-radius: 13px;
+  border-bottom-right-radius: 13px;
+}
+
+/* New styles for content inside the line */
+.divider1 .icon-left,
+.divider1 .icon-right,
+.divider1 .divider-text {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.divider1 .icon-left {
+  left: 15px; /* distance from left edge */
+  width: 26px;  /* adjust to fit */
+  height: 26px; /* adjust to fit */
+}
+
+.divider1 .divider-text {
+  left: 220px;
+  transform: translate(-50%, -50%); /* center text horizontally */
+  color: #4362FF;
+  font-size: 17px;
+}
+
+.divider1 .icon-right {
+    font-size: 17px;
+    text-decoration: none;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #787878;
+    display: flex;
+    align-items: center;
+    gap: 5px; /* space between text and arrow */
+    transition: color 0.2s ease;
+}
+
+.divider1 .icon-right:hover {
+    color: #4b4b4b; /* darken text */
+}
+
+.divider1 .icon-right .arrow-icon {
+    width: 12px;  /* adjust size */
+    height: 12px;
+    filter: brightness(0) invert(0.46); /* makes it same color as text (#787878) */
+    transition: filter 0.2s ease;
+}
+
+.divider1 .icon-right:hover .arrow-icon {
+    filter: brightness(0) invert(0.29); /* darken to match text hover color (#4b4b4b) */
+}
+
+.divider1 .icon-right::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: -9px;
+    right: -9px;
+    bottom: -9px;
+    background-color: rgba(0,0,0,0.05);
+    border-radius: 12px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.divider1 .icon-right:hover::before {
+    opacity: 1;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <img src="iconflashing.svg">
+</div>
+
+<!-- LOGO -->
+<a class="sidebar-logo" id="sidebarLogo">
+  <img src="webicon.svg">
+  <span class="sidebar-text">Intellecta</span>
+</a>
+
+<!-- OUTER FRAME -->
+<div class="outermargins" id="outer">
+<button id="toggleOuter">
+  <img id="toggleIcon" src="sidebar.svg">
+</button>
+
+<div class="innerContent" id="questionsContainer">
+
+  <p class="chapter-title" id="chapterTitle"></p>
+
+  <!-- TOGGLE OPTIONS -->
+<div class="content-toggle">
+    <button class="toggle-btn" id="allBtn">
+        <img src="icon2.svg" class="icon">
+        All
+    </button>
+    <button class="toggle-btn active" id="questionBankBtn">
+        <img src="questionmark.svg" class="icon">
+        Question Bank
+    </button>
+    <button class="toggle-btn" id="flashcardsBtn">
+        <img src="flashcards.svg" class="icon">
+        Flashcards
+    </button>
+</div>
+
+<div class="divider"></div>
+
+<!-- OFFICIAL BANNER -->
+<div class="divider1">
+    <img src="officialicon.svg" class="icon-left">
+    <span class="divider-text">Official IGCSE Study Resources – Free Access</span>
+    <a href="#" class="icon-right">
+        Submit Questions
+        <img src="arrow.svg" class="arrow-icon">
+    </a>
+</div>
+
+<!-- FILTER DROPDOWNS -->
+<div id="filtersContainer" style="display:flex; gap:12px; margin-bottom:-20px;">
+
+    <!-- Board -->
+    <div class="custom-dropdown-container">
+        <div class="dropdown-label">Board</div>
+        <div class="custom-dropdown" id="boardDropdown">
+            <button class="dropdown-btn">All ▾</button>
+            <div class="dropdown-content">
+                <button data-board="IGCSE">IGCSE</button>
+                <button data-board="Edexcel">Edexcel</button>
+                <button data-board="All">All</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paper -->
+    <div class="custom-dropdown-container">
+        <div class="dropdown-label">Paper</div>
+        <div class="custom-dropdown" id="paperDropdown">
+            <button class="dropdown-btn">All Papers ▾</button>
+            <div class="dropdown-content">
+                <button data-paper="Paper 1">Paper 1</button>
+                <button data-paper="Paper 2">Paper 2</button>
+                <button data-paper="Paper 3">Paper 3</button>
+                <button data-paper="All">All Papers</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RESET BUTTON -->
+<button id="resetProgress" class="clickable-square" title="Reset Progress">
+    <img src="refresh.svg">
+</button>
+
+</div>
+</div>
+
+<!-- QUESTION TEMPLATE (UNCHANGED) -->
+<div id="questionTemplate" class="question-box" style="display:none;">
+
+    <div class="question-header">
+        <div class="question-header-left">
+            <span class="qnum">Question</span>
+            <div class="tags"></div>
+        </div>
+
+        <div class="dropdown">
+            <button class="dropdown-btn clickable-square">
+                <img src="options.svg" alt="">
+            </button>
+
+            <div class="dropdown-content">
+                <button class="report-btn">
+                    <img src="report-icon.svg" width="16" style="margin-right:10px;">
+                    Report Question
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-text"></div>
+
+    <div class="options">
+        <div class="option">
+            <div class="option-circle">A</div>
+            <span></span>
+        </div>
+        <div class="option">
+            <div class="option-circle">B</div>
+            <span></span>
+        </div>
+        <div class="option">
+            <div class="option-circle">C</div>
+            <span></span>
+        </div>
+        <div class="option">
+            <div class="option-circle">D</div>
+            <span></span>
+        </div>
+    </div>
+
+    <!-- Predicted grade panel -->
+    <div class="predicted-grade">
+        <div class="grade-circle">A*</div>
+        <div class="grade-list"></div>
+    </div>
+
+</div>
+
+<!-- ===== CORE LOGIC ===== -->
+<script>
+let questionCount = 1;
+
+function addQuestion(
+  questionText,
+  options,
+  correctIndex,
+  tags,
+  difficulty = "easy",
+  imageUrl = null,
+  answerText = "",
+  explanation = ""
+) {
+  const container = document.getElementById("questionsContainer");
+  const template = document.getElementById("questionTemplate");
+
+  const q = template.cloneNode(true);
+  q.style.display = "block";
+  q.id = "";
+
+  const index = questionCount - 1;
+  q.querySelector(".qnum").textContent = `Question ${questionCount++}`;
+  q.querySelector(".question-text").textContent = questionText;
+
+  // image
+  if (imageUrl) {
+    const img = document.createElement("img");
+    img.src = imageUrl;
+    img.className = "question-image";
+    q.insertBefore(img, q.querySelector(".options"));
+  }
+
+  // tags
+  const tagBox = q.querySelector(".tags");
+  tagBox.innerHTML = "";
+  tags.forEach(t => {
+    const span = document.createElement("span");
+    span.className = "tag";
+    span.textContent = t;
+    tagBox.appendChild(span);
+  });
+
+  // options
+  const optionDivs = q.querySelectorAll(".option");
+  optionDivs.forEach((div, i) => {
+    div.childNodes[1].textContent = options[i];
+    div.onclick = () => {
+      optionDivs.forEach(o =>
+        o.querySelector(".option-circle").classList.remove("selected","correct","wrong")
+      );
+      const circle = div.querySelector(".option-circle");
+      circle.classList.add("selected");
+      circle.classList.add(i === correctIndex ? "correct" : "wrong");
+    };
+  });
+
+  container.appendChild(q);
+}
+
+function addTextQuestion(questionText, markScheme, keywords, tags) {
+  const container = document.getElementById("questionsContainer");
+  const template = document.getElementById("questionTemplate");
+  const q = template.cloneNode(true);
+
+  q.style.display = "block";
+  q.id = "";
+  q.querySelector(".qnum").textContent = `Question ${questionCount++}`;
+  q.querySelector(".question-text").textContent = questionText;
+  q.querySelector(".options").remove();
+
+  const sa = document.createElement("div");
+  sa.className = "short-answer";
+  sa.innerHTML = `
+    <textarea></textarea>
+    <button class="check-answer-btn">Check</button>
+  `;
+  q.appendChild(sa);
+
+  const tagBox = q.querySelector(".tags");
+  tagBox.innerHTML = "";
+  tags.forEach(t => {
+    const span = document.createElement("span");
+    span.className = "tag";
+    span.textContent = t;
+    tagBox.appendChild(span);
+  });
+
+  container.appendChild(q);
+}
+</script>
+
+<!-- ===== DYNAMIC LOADER ===== -->
+<script>
+async function loadTopic() {
+  const params = new URLSearchParams(window.location.search);
+  const topic = params.get("topic") || "b1";
+  document.getElementById("chapterTitle").textContent = topic.replace(/_/g," ");
+
+  const res = await fetch(`data/${topic}.js`);
+  const code = await res.text();
+  eval(code);
+}
+
+window.onload = () => {
+  loadTopic();
+  setTimeout(() => document.getElementById("splash").classList.add("hide"), 1500);
+};
+</script>
+
+</body>
+</html>
