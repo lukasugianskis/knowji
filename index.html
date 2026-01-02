@@ -1,7 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowji - IGCSE Tutor</title>
     <link rel="icon" href="webicon.svg" type="image/svg">
 
-   <style>
+    <!-- PASTE YOUR ENTIRE CSS HERE - Copy from original code -->
+    <style>
 /* ====== LOAD LOCAL APTOS FONT ====== */
 @font-face {
     font-family: "Aptos";
@@ -30,7 +36,7 @@ body, html {
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
-    background-color: #f7f7f7;
+    background-color: #ffffff;
     font-family: "Aptos", "Segoe UI", sans-serif;
 }
 
@@ -43,12 +49,12 @@ body, html {
     height: 91vh;
     border: 2px solid #e6e6e6;
     border-radius: 20px;
-    background-color: #f7f7f7;
+    background-color: #ffffff;
     box-sizing: border-box;
     transition: width 0.25s ease;
     display: flex;
     flex-direction: column;
-    padding: 10px;
+    padding: 0px;
 }
 .outermargins.expanded { width: 85vw; }
 
@@ -64,13 +70,40 @@ body, html {
     color: #333;
     padding: 20px 0;
     width: 100%;
+    position: relative;  /* for pseudo-element positioning */
 }
 
+/* Top fade overlay using an image */
+.innerContent::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0.5;
+    height: 200px;  /* fade height */
+    border-radius: 19px;
+    background: url('background1.png') no-repeat center center;
+    background-size: cover;
 
+    /* fade out to transparent */
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
 
-/* BOOSTER FRAME */
-.boosterframe { width: 225px; height: 45px; border: 2.25px solid #e6e6e6; border-radius: 15px; background: transparent; position: fixed; top: 12px; right: 90px; }
-.boosterframe-seperator { width: 1px; height: 45px; background-color: #e6e6e6; position: fixed; top: 12px; right: 155px; }
+    filter: blur(8px);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.innerContent.shifted .chapter-title,
+.innerContent.shifted #resetProgress,
+.innerContent.shifted .custom-dropdown,
+.innerContent.shifted .dropdown-label,
+.innerContent.shifted .content-toggle {
+    
+    transform: translateX(36px);
+    transition: transform 0.25s ease; /* smooth for expand and collapse */
+}
 
 /* TOGGLE BUTTON */
 #toggleOuter { position: absolute; bottom: 668px; left: 10px; width: 48px; height: 48px; border-radius: 12px; border: 0; background: transparent; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 1; }
@@ -82,6 +115,7 @@ body, html {
 /* QUESTION BOX STYLE */
 .question-box {
     width: 60%;
+    height: 72%;
     background-color: #fff;
     border-radius: 25px;
     border: 2.5px solid #e6e6e6;
@@ -91,7 +125,7 @@ body, html {
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     padding: 30px;
     margin-bottom: 30px;
-    flex-shrink: -20;           
+    flex-shrink: 0;           
     box-sizing: border-box;   
 }
 
@@ -198,13 +232,33 @@ body, html {
     align-items: center;
     gap: 8px;
 
-    transition: background 0.15s ease;
+    position: relative;         /* needed for pseudo-element hover effect */
+    transition: background 0.15s ease, color 0.2s ease;
+}
+
+.dropdown-content button::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -1px;
+    right: -1px;
+    bottom: -5px;
+    background-color: rgba(0,0,0,0.05);  /* subtle hover highlight */
+    border-radius: 10px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.2s ease;
 }
 
 .dropdown-content button:hover {
-    background: #eeeeee;
-    border-radius: 4px;
+    background: #eeeeee;          /* your existing hover */
+    border-radius: 10px;          /* keep original shape */
     line-height: 1;
+    color: #4b4b4b;               /* optional, like icon-right */
+}
+
+.dropdown-content button:hover::before {
+    opacity: 1;                   /* subtle highlight effect */
 }
 
 /* Report form modal */
@@ -262,56 +316,60 @@ body, html {
 }
 
 /* Options */
-.options { display: flex; flex-direction: column; gap: 2px; }
-.option {
-    position: relative; 
-    color : #525151;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 6px 12px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.2s;
-}
-.option-circle:hover { background-color: #fff; border-color: #c9c8c8; }
+        .options { display: flex; flex-direction: column; gap: 4px; }
+        .option {
+            position: relative; 
+            color : #525151;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option:hover { 
+            background: #f8f8f8;
+            transform: translateX(4px);
+        }
 
-.option-circle {
-    width: 40px;
-    height: 40px;
-    border: 2px solid #e6e6e6;
-    border-radius: 40%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    font-size: 18px;
-    flex-shrink: -20;
-    box-sizing: border-box;
-    transition: background-color 0.4s ease, border-color 0.4s ease;
-    color: #848484;
-}
+        .option-circle {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #e6e6e6;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: #848484;
+            background: white;
+        }
 
-.option-circle.correct {
-    transform: scale(1.1);
-    transition: background-color 0.4s ease, border-color 0.4s ease, transform 0.2s ease;
-    background-color: #4CAF50;
-    border: 4px solid #c9e9d0;
-    color: #fff;
-    padding: 0px;
-    box-sizing: border-box;
-}
+        .option-circle.selected {
+            border-width: 4px;
+        }
 
-.option-circle.wrong {
-    transform: scale(1.1);
-    transition: background-color 0.4s ease, border-color 0.4s ease, transform 0.2s ease;
-    background-color: #F44336;
-    border: 4px solid #e9c9c9;
-    color: #fff;
-    padding: 0px;
-    box-sizing: border-box;
-}
+        .option-circle.correct {
+            background-color: #4CAF50;
+            border-color: #a7dbb4;
+            color: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .option-circle.wrong {
+            background-color: #F44336;
+            border-color: #dba7a7;
+            color: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.3);
+        }
 
 .question-box.correct {
     outline: 4px solid #a7dbb4;
@@ -331,6 +389,130 @@ body, html {
     font-family: "Aptos", "Segoe UI", sans-serif !important;
 }
 
+/* ===== SHORT ANSWER QUESTION ===== */
+.short-answer {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.short-answer textarea {
+    width: 101.5%;
+    height: 160px;
+    resize: none;
+    padding: 12px;
+    font-family: "Aptos", sans-serif;
+    font-size: 17px;
+    color: #606060;
+    border-radius: 16px;
+    border: 0px solid #e6e6e6;
+    background-color: #f2f2f2;
+    outline: none;
+    box-sizing: border-box;
+    position: relative;
+    left: -8px;
+    top: -65px;
+}
+
+.short-answer textarea:focus {
+    border-color: #44b6f3;
+}
+
+.check-answer-btn {
+    margin-top: 10px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    background: #e2f4fe;
+    color: #44b6f3;
+    position: relative;
+    top: -60px;
+    left: -8px;
+}
+
+.check-answer-btn:hover {
+    background: #cceafc;
+}
+
+/* ===== PREDICTED GRADE PANEL (WRITTEN ONLY) ===== */
+.predicted-grade {
+    margin-top: 14px;
+    padding: 18px;
+    border-radius: 18px;
+    background: #f5faf5;
+    border: 2px solid #e1efe1;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.45s ease, opacity 0.3s ease;
+}
+
+.predicted-grade.show {
+    max-height: 500px;
+    opacity: 1;
+}
+
+/* grade circle */
+.grade-circle {
+    min-width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 6px solid #3ba55d;
+    color: #3ba55d;
+    font-weight: 700;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* mark scheme rows */
+.grade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.grade-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ecf7ec;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-weight: 600;
+    color: #2e6b3f;
+}
+
+.grade-row.wrong {
+    background: #fdeeee;
+    color: #a63d3d;
+}
+
+.grade-row .icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #3ba55d;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.grade-row.wrong .icon {
+    background: #e04b4b;
+}
+
+
 .qnum {
     position: relative;
     left: 10px;
@@ -344,6 +526,7 @@ body, html {
 }
 
 .clickable-square {
+    padding: 0;
     background-color: #f0f0f0; /* grey square */
     width: 38px; /* adjust as needed */
     height: 38px; /* adjust as needed */
@@ -396,19 +579,20 @@ body, html {
 }
 
 .chapter-title {
-    font-size: 32px;        /* text size */
+    font-size: 40px;        /* text size */
     font-weight: 700;       /* boldness */
     color: #222;            /* text color */
     text-align: center;     /* horizontal position */
-    margin: 10px 0;         /* spacing above/below */
+    margin-top: 90px;         /* spacing above/below */
     position: relative;     
     top: -5px;              /* move up/down */
-    left: -180px;              /* move left/right */
+    left: -115px;              /* move left/right */
+    letter-spacing: -2px;
 }
 
 .question-image {
     display: block;          /* makes margin auto work */
-    max-width: 100%;         /* don’t exceed container width */
+    max-width: 100%;         /* don't exceed container width */
     height: auto;
     margin: 10px auto;       /* top/bottom spacing + auto left/right centers it */
     border-radius: 12px;     /* optional rounding */
@@ -493,7 +677,7 @@ body, html {
     padding: 12px;
     margin-bottom: 10px;
     position: relative;
-    top: 15px;
+    top: 6px;
 }
 .answer-frame p {
     margin: 0;
@@ -511,46 +695,6 @@ body, html {
     font-size: 20px;
     cursor: pointer;
     font-weight: bold;
-}
-
-.certified-frame {
-    display: flex;
-    align-items: left;
-    gap: 10px;               
-    background-color: #d3dafd; 
-    border: 0px solid #bce7be; 
-    border-radius: 12px;
-    padding: 8px 12px;
-    width: fit-content;       
-    margin: 10px 0;      /* only top/bottom spacing, no auto */
-    position: relative;
-    left: -287px; 
-    top: -20px;             /* move left/right */
-}
-
-.certified-icon {
-    width: 24px;   /* adjust size as needed */
-    height: 24px;
-    position: relative;
-    top: -3px;      /* center vertically with text */
-}
-
-.certified-text {
-    font-family: "Aptos", sans-serif;
-    font-weight: 600;
-    font-size: 16px;
-    color: #244081;  /* dark green text */
-    position: relative;
-    left: -3px;     /* center vertically with icon */
-    top: 1px;
-}
-
-.chapter-separator {
-    border: none;           /* remove default border */
-    height: 2px;            /* thin line */
-    background-color: #e6e6e6; /* light grey color */
-    margin: 8px 0;          /* spacing above and below */
-    width: 70%;            /* full width of container */
 }
 
 .sidebar-logo {
@@ -620,298 +764,2547 @@ body, html {
     transition: opacity 1s ease;
 }
 
-</style>
+/* Custom filter dropdowns */
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-dropdown .dropdown-btn {
+    background: #f6f5f5;
+    border: 2.5px solid #e6e6e6;
+    border-radius: 14px;
+    padding: 6px 12px;
+    height: 48px;
+    width: 175px;
+    font-family: "Aptos", sans-serif;
+    font-weight: 600;
+    font-size: 17px;
+    cursor: pointer;
+    min-width: 130px;
+    text-align: left;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+    position: relative;
+    left: -229px;
+    top: -6px;
+}
+
+.custom-dropdown .dropdown-btn:hover {
+    background-color: #eeecec;
+}
+
+.custom-dropdown .dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: -229px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    background: #fff;
+    border: 2px solid #e6e6e6;
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+
+    width: 150px;        /* match button width */
+    height: 105;         /* grows to fit all buttons */
+    max-height: none;     /* remove max-height */
+    overflow: visible;    /* allow full expansion */
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10000;
+}
+
+#boardDropdown .dropdown-content {
+    height: 105px;   /* match or customize */
+    z-index: 999999;
+}
+
+#paperDropdown .dropdown-content {
+    height: 145px;
+    z-index: 999999;
+}
+
+.custom-dropdown .dropdown-content button {
+    width: 160px;
+    height: 40px;               /* fixed height */
+    padding: 8px 12px;          /* keep consistent */
+    text-align: left;
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    left: -5.5px;
+    box-sizing: border-box;     /* include border in size */
+}
+
+/* Show dropdown */
+.custom-dropdown.show .dropdown-content {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* Hover effect */
+.custom-dropdown .dropdown-content button:hover {
+    background-color: #f5f3f3;
+    /* NO height or width change! */
+}
+
+.dropdown-label {
+    font-family: "Aptos", sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 6px;
+    position: relative;
+    left: -225px;
+    top: -4px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  width: 59.5%; /* make it fill the parent */
+  margin-bottom: 30px; /* spacing above/below */
+  margin-top: 30px;
+  color: #1c0505; /* text color */
+  font-weight: 600; 
+  font-size: 16px; /* adjust text size */
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1; /* make it stretch equally on both sides */
+  height: 1.75px; /* line thickness */
+  background-color: #ededed; /* line color */
+}
+
+#resetProgress {
+    display: inline-flex;      /* keeps content centered */
+    justify-content: center;
+    align-items: center;
+    width: 48px;               /* fixed width */
+    height: 48px;              /* fixed height */
+    padding: 0;
+    box-sizing: border-box;    /* include padding/border in size */
+    position: relative;
+    top: -35px;
+    left: -12px;
+}
+#resetProgress img {
+    width: 60%;
+    height: 60%;
+    object-fit: contain;
+    display: block;
+}
+
+#resetProgress {
+    outline: none;           /* remove focus outline */
+    box-shadow: none;        /* remove shadow */
+    border-width: 2.5px;     /* set border width */
+    border-color: #e6e6e6;   /* set border color */
+    border-style: solid;     /* make sure border is visible */
+    flex: 0 0 auto;          /* prevent flex from resizing */
+}
+
+#resetProgress:focus,
+#resetProgress:active {
+    outline: none;           /* remove focus outline */
+    box-shadow: none;        /* remove shadow */
+    border-width: 2.5px;     /* set border width */
+    border-color: #e6e6e6;   /* set border color */
+    border-style: solid;     /* make sure border is visible */
+    flex: 0 0 auto;   
+}
+
+@keyframes spinFast {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#resetProgress.spin img {
+    animation: spinFast 0.4s ease-in-out;
+}
+
+.report-btn {
+    font-family: "Aptos", sans-serif;  /* change font */
+    font-size: 16px;                    /* change size */
+    font-weight: 700;                   /* boldness */
+    color: #000000;                     /* text color */
+    text-transform: uppercase;          /* optional uppercase */
+    letter-spacing: 0.5px;              /* optional spacing */
+    padding: 8px 12px;                  /* spacing inside button */
+    cursor: pointer;
+    position: relative;
+}
+
+.report-text {
+    order: 1;         /* ensures text stays first in flex layout */
+    margin-right: 10px; /* pushes the image to the right */
+}
+
+/* ====== CONTENT TOGGLE ====== */
+.content-toggle {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 10px;
+    margin-top: -30px;
+    padding: 8px;
+    background: #f8f8f8;
+    border-radius: 20px;
+    position: relative;
+    left: -190px;
+    top: 31px;
+}
+
+/* EXTEND BACKGROUND TO THE RIGHT */
+.content-toggle::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -378px;      /* 👈 how far it extends */
+    width: 420px;       /* 👈 extension length */
+    height: 100%;
+    background: #f8f8f8;
+    border-radius: 20px;
+    z-index: -1;
+}
+
+        .toggle-btn {
+            padding: 10px 24px;
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 16px;
+            font-family: "Aptos", sans-serif;
+            color: #696969;
+            position: relative;
+            overflow: visible;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+            transform: translateY(-1px);
+        }
+
+        .toggle-btn.active {
+            background: white;
+            color: #1d6fd2;
+            box-shadow: 0 4px 12px rgba(29, 111, 210, 0.15);
+        }
+
+        .toggle-btn.active::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -6px;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 3px;
+            background-color: #1d6fd2;
+            border-radius: 2px;
+        }
+
+        .toggle-btn .icon {
+            width: 20px;
+            height: 20px;
+            transition: all 0.3s ease;
+            filter: grayscale(100%) brightness(70%);
+        }
+
+        .toggle-btn.active .icon {
+            filter: invert(33%) sepia(92%) saturate(4519%)
+            hue-rotate(197deg) brightness(95%) contrast(97%);
+        }
+.divider1 {
+  display: flex;
+  align-items: center;
+  width: 59.5%; /* make it fill the parent */
+  margin: 30px 0; /* spacing above/below */
+  color: #1c0505; /* text color */
+  font-weight: 600; 
+  font-size: 16px; /* adjust text size */
+  margin-top: 10px;
+  position: relative;
+  left: 0px;
+}
+
+.divider1::before {
+  content: '';
+  flex: 1;
+  height: 50px; /* line thickness */
+  background-color: rgb(216, 227, 252);
+  border-top-left-radius: 13px;
+  border-bottom-left-radius: 13px;
+}
+
+.divider1::after {
+  content: '';
+  flex: 1;
+  height: 50px;
+  background-color: rgb(216, 227, 252);
+  border-top-right-radius: 13px;
+  border-bottom-right-radius: 13px;
+}
+
+/* New styles for content inside the line */
+.divider1 .icon-left,
+.divider1 .icon-right,
+.divider1 .divider-text {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.divider1 .icon-left {
+  left: 15px; /* distance from left edge */
+  width: 26px;  /* adjust to fit */
+  height: 26px; /* adjust to fit */
+}
+
+.divider1 .divider-text {
+  left: 235px;
+  transform: translate(-50%, -50%); /* center text horizontally */
+  color: #4362FF;
+  font-size: 18px;
+font-weight: 600;
+}
+
+.divider1 .icon-right {
+    font-size: 17px;
+    text-decoration: none;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #787878;
+    display: flex;
+    align-items: center;
+    gap: 5px; /* space between text and arrow */
+    transition: color 0.2s ease;
+}
+
+.divider1 .icon-right:hover {
+    color: #4b4b4b; /* darken text */
+}
+
+.divider1 .icon-right .arrow-icon {
+    width: 12px;  /* adjust size */
+    height: 12px;
+    filter: brightness(0) invert(0.46); /* makes it same color as text (#787878) */
+    transition: filter 0.2s ease;
+}
+
+.divider1 .icon-right:hover .arrow-icon {
+    filter: brightness(0) invert(0.29); /* darken to match text hover color (#4b4b4b) */
+}
+
+.divider1 .icon-right::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: -9px;
+    right: -9px;
+    bottom: -9px;
+    background-color: rgba(0,0,0,0.05);
+    border-radius: 12px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.divider1 .icon-right:hover::before {
+    opacity: 1;
+}
+
+/* ====== UPDATED NOTEBOOK MODAL STYLES ====== */
+.notebook-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+}
+
+.notebook-modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.notebook-content {
+    background: #fff;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    display: flex;
+    overflow: hidden;
+    border: none;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+.notebook-modal.show .notebook-content {
+    transform: scale(1);
+}
+
+/* Resizable columns with locked ratio */
+.notebook-left {
+    flex: 0 0 70%;
+    padding: 40px;
+    overflow-y: auto;
+    background: #fff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 300px;
+    resize: horizontal;
+    overflow: auto;
+    max-width: 85%;
+    min-width: 50%;
+}
+
+/* Question container in notebook */
+.notebook-question-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.notebook-question-box {
+    width: 100%;
+    min-height: 400px;
+    background-color: #fff;
+    border-radius: 25px;
+    border: 2.5px solid #e6e6e6;
+    padding: 30px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.notebook-question-box .question-text {
+    font-size: 1.2em;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.notebook-question-box .options {
+    margin: 20px auto;
+    width: 90%;
+}
+
+.notebook-question-box .option {
+    margin: 10px 0;
+}
+
+/* Resizable divider */
+.notebook-divider {
+    position: relative;
+    width: 10px;
+    background: #e6e6e6;
+    cursor: col-resize;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.notebook-divider:hover,
+.notebook-divider.dragging {
+    background: #44b6f3;
+}
+
+.notebook-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 40px;
+    background: #999;
+    border-radius: 2px;
+    opacity: 0.5;
+}
+
+.notebook-divider:hover::before {
+    background: #44b6f3;
+    opacity: 1;
+}
+
+.notebook-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #fafafa;
+    min-width: 300px;
+    height: 100%;
+}
+
+.notebook-toolbar {
+    display: flex;
+    padding: 15px;
+    border-bottom: 2px solid #e6e6e6;
+    background: #fff;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tool-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 2px solid #e6e6e6;
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.tool-btn:hover {
+    background: #f0f0f0;
+    transform: translateY(-1px);
+}
+
+.tool-btn.active {
+    background: #e2f4fe;
+    border-color: #44b6f3;
+}
+
+.tool-btn img, .tool-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.tool-color {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 2px solid #e6e6e6;
+    cursor: pointer;
+    padding: 0;
+    overflow: hidden;
+}
+
+.tool-color input {
+    width: 100%;
+    height: 100%;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0;
+}
+
+.tool-size {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    background: #fff;
+    border: 2px solid #e6e6e6;
+    border-radius: 12px;
+}
+
+.tool-size input {
+    width: 100px;
+    cursor: pointer;
+}
+
+/* Canvas container with tabs */
+.notebook-right-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.notebook-tabs {
+    display: flex;
+    background: #fff;
+    border-bottom: 2px solid #e6e6e6;
+}
+
+.notebook-tab {
+    padding: 12px 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: "Aptos", sans-serif;
+    font-weight: 600;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.notebook-tab.active {
+    color: #44b6f3;
+    border-bottom-color: #44b6f3;
+    background: #f0f9ff;
+}
+
+.notebook-tab-content {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-pane {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background: #fff;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+#drawCanvasContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#notebookCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #fff;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+#notesTextarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    padding: 20px;
+    font-family: "Aptos", sans-serif;
+    font-size: 16px;
+    resize: none;
+    background: #fff;
+    color: #333;
+    line-height: 1.5;
+    outline: none;
+    box-sizing: border-box;
+}
+
+#notesTextarea:focus {
+    outline: none;
+}
+
+/* Close button positioning */
+.close-notebook {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: 2px solid #e6e6e6;
+    background: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #666;
+    z-index: 100;
+    transition: all 0.2s ease;
+}
+
+.close-notebook:hover {
+    background: #f0f0f0;
+    color: #333;
+    transform: rotate(90deg);
+}
+
+.notebook-clear {
+    margin-left: auto;
+    padding: 0 16px;
+    background: #ffeaea;
+    border-color: #ffaaaa;
+    color: #d44;
+    font-size: 14px;
+    font-weight: 600;
+    width: auto;
+    min-width: 80px;
+}
+
+.notebook-clear:hover {
+    background: #ffdddd;
+}
+
+/* Button adjustments for notebook mode */
+.notebook-btn {
+    color: #a95dc9;
+    background: #f3e5f5;
+    font-size: 16px;
+    padding: 6px 12px;
+    border-radius: 14px;
+    border: 0px solid #e6e6e6;
+    cursor: pointer;
+    font-weight: 600;
+    width: 90px;
+    height: 38px;
+    transition: background 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notebook-btn:hover {
+    background: #e1c3e7;
+}
+
+.answer-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.answer-icon {
+    width: 24px;
+    height: 24px;
+    opacity: 0.8;
+}
+
+.answer-icon.right.clickable {
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.answer-icon.right.clickable:hover {
+    transform: scale(1.1);
+    opacity: 1;
+}
+
+.answer-input {
+    flex: 1;
+    padding: 14.5px 12.5px;
+    border-radius: 15px;
+    border: 0px solid #ddd;
+    font-size: 16.5px;
+    font-weight: 500;
+    color: #a3a3a3;
+    outline: none;
+    background-color: #f4f4f4;
+}
+
+.answer-input:focus {
+    border-color: #1d6fd2;
+}
+
+.answer-input::placeholder {
+    color: #a3a3a3;
+}
+
+.answer-icon {
+    width: 46px;
+    height: 46px;
+}
+
+.enter-btn {
+    width: 46px;
+    height: 46px;
+    border: none;
+    border-radius: 14px;
+    background: #92c2e2; /* change freely */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.25s ease, transform 0.15s ease;
+}
+
+.enter-btn img {
+    width: 23px;      /* icon size */
+    height: 23px;
+    object-fit: contain;
+}
+
+.enter-btn:hover {
+    opacity: 0.85;
+}
+.enter-btn:active {
+    transform: scale(0.96);
+}
+
+/* ====== CONNECT QUESTION STYLES ====== */
+.connect-container {
+    display: flex;
+    gap: 40px;
+    margin-top: 20px;
+    position: relative;
+}
+
+.connect-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.question-box.connect-question .connect-container {
+    margin-bottom: 60px; /* Creates space between connect items and Kiji bar */
+}
+
+.connect-item {
+    padding: 20px 24px;
+    border: 2.5px solid #e6e6e6;
+    border-radius: 16px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    color: #737373;
+    font-weight: 600;
+    position: relative;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    top: 30px;
+}
+
+.connect-item:hover {
+    background: #f8f8f8;
+    transform: translateX(4px);
+}
+
+.connect-item.selected {
+    border-color: #44b6f3;
+    background: #e2f4fe;
+}
+
+.connect-item.correct {
+    border-color: #a7dbb4;
+    border-width: 2.5px;
+    background: #bbf7bb;
+}
+
+.connect-item.wrong {
+    border-color: #e98989;
+    border-width: 2.5px;
+    background: #f6a5a5;
+    color: #ffffff;
+}
+
+.connect-item-number {
+    position: absolute;
+    left: -22px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #848484;
+    border: 2px solid #e6e6e6;
+    visibility: hidden;
+}
+
+.connect-item.correct .connect-item-number {
+    background: #bbf7bb;
+    color: rgb(141, 141, 141);
+    border-color: #a7dbb4;
+    border-width: 2.5px;
+}
+
+.connect-item.wrong .connect-item-number {
+    background: #f6a5a5;
+    color: rgb(255, 255, 255);
+    border-color: #e98989;
+    border-width: 2.5px;
+}
+
+.connect-check-btn {
+    margin-top: 25px;
+    padding: 12px 24px;
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    background: #e2f4fe;
+    color: #44b6f3;
+    align-self: flex-start;
+    transition: all 0.3s ease;
+    visibility: hidden;
+}
+
+.connect-check-btn:hover {
+    background: #cceafc;
+    transform: translateY(-2px);
+    visibility: hidden;
+}
+
+.connect-instruction {
+    color: #666;
+    font-size: 15px;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+/* ====== CONNECT QUESTION SPECIFIC HEIGHT ====== */
+.question-box.connect-question {
+    height: 105%; /* Change from 72% to whatever you prefer */
+}
+
+/* If you want to adjust inner layout for connect questions */
+.question-box.connect-question .connect-container {
+    flex: 1; /* Make it take available space */
+    margin-top: -45px;
+}
+
+.question-box.connect-question .question-text {
+    margin-bottom: 20px;
+}
+
+/* ====== ANSWER BUTTON STYLES ====== */
+.answer-btn {
+    color: #44b6f3;
+    font-size: 16px;
+    padding: 6px 12px;
+    border-radius: 14px;
+    border: 0px solid #e6e6e6;
+    cursor: pointer;
+    font-weight: 600;
+    background: #e2f4fe;
+    width: 90px;
+    height: 38px;
+    transition: background 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.answer-btn:hover {
+    background: #cceafc;
+}
+
+/* Button group styles */
+.button-group {
+    position: absolute;
+    top: 0px;
+    right: 15px;
+    display: flex;
+    gap: 8px;
+    z-index: 5;
+}
+
+/* Remove old answer button positioning styles since we now use button-group */
+    </style>
 </head>
 <body>
 
-<!-- Add this inside your <body>, ideally before other content -->
-<a href="YOUR_TARGET_URL_HERE" class="sidebar-logo" id="sidebarLogo">
-    <img src="webicon.svg" alt="Web Icon">
-    <span class="sidebar-text">Intellecta</span>
-</a>
+    <!-- Add this inside your <body>, ideally before other content -->
+    <a href="http://127.0.0.1:5500/login.html" class="sidebar-logo" id="sidebarLogo">
+        <img src="webicon.svg" alt="Web Icon">
+        <span class="sidebar-text">Knowji</span>
+    </a>
 
-<div class="boosterframe"></div>
-<div class="boosterframe-seperator"></div>
+    <div class="outermargins" id="outer">
+        <button id="toggleOuter">
+            <img id="toggleIcon" src="sidebar.svg" alt="Toggle">
+        </button>
+        
+        <div class="innerContent" id="questionsContainer">
+            <!-- Chapter title will be set dynamically -->
+            <p class="chapter-title" id="chapterTitle">Loading...</p>
 
-<div class="outermargins" id="outer">
-    <button id="toggleOuter">
-        <img id="toggleIcon" src="sidebar.svg" alt="Toggle">
-    </button>
-   <div class="innerContent">
-    <p class="chapter-title">Chapter 1 - Cells Questionbank</p>
-    <hr class="chapter-separator">
-    <div class="certified-frame">
-        <img src="heart.svg" alt="Certified" class="certified-icon">
-        <span class="certified-text">Certified IGCSE Questions</span>
-    </div>
-</div>
+            <!-- Toggle Options -->
+            <div class="content-toggle">
+                <button class="toggle-btn" id="allBtn" onclick="window.location.href='https://YOUR_ALL_URL_HERE'">
+                    <img src="icon2.svg" alt="All Icon" class="icon">
+                    All
+                </button>
+                <button class="toggle-btn active" id="questionBankBtn">
+                    <img src="questionmark.svg" alt="Question Bank Icon" class="icon">
+                    Question Bank
+                </button>
+                <button class="toggle-btn" id="flashcardsBtn" onclick="window.location.href='https://YOUR_FLASHCARD_URL_HERE'">
+                    <img src="flashcards.svg" alt="Flashcards Icon" class="icon">
+                    Flashcards
+                </button>
+            </div>
 
-</div>
-</div>
+            <div class="divider"></div>
 
-<!-- QUESTION TEMPLATE -->
-<div id="questionTemplate" class="question-box" style="display:none;">
-    <div class="question-header">
-        <div class="question-header-left">
-            <span class="qnum">Question 1</span>
-            <div class="tags"></div>
+            <div class="divider1">
+                <img src="officialicon.svg" alt="Left Icon" class="icon-left">
+                <span class="divider-text">Official IGCSE Study Resources – Free Access</span>
+                <a href="https://yourlink.com" class="icon-right">Submit Questions
+                    <img src="arrow.svg" alt="Arrow" class="arrow-icon">
+                </a>
+            </div>
+
+            <!-- FILTER DROPDOWNS -->
+            <div id="filtersContainer" style="display: flex; gap: 12px; margin-bottom: -20px;">
+                <!-- Board Dropdown -->
+                <div class="custom-dropdown-container">
+                    <div class="dropdown-label">Board</div>
+                    <div class="custom-dropdown" id="boardDropdown">
+                        <button class="dropdown-btn">All</button>
+                        <div class="dropdown-content">
+                            <button data-board="IGCSE">IGCSE</button>
+                            <button data-board="Edexcel">Edexcel</button>
+                            <button data-board="All">All</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paper Dropdown -->
+                <div class="custom-dropdown-container">
+                    <div class="dropdown-label">Paper</div>
+                    <div class="custom-dropdown" id="paperDropdown">
+                        <button class="dropdown-btn">All Papers</button>
+                        <div class="dropdown-content">
+                            <button data-paper="Paper 1">Paper 1</button>
+                            <button data-paper="Paper 2">Paper 2</button>
+                            <button data-paper="Paper 3">Paper 3</button>
+                            <button data-paper="All">All Papers</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESET BUTTON -->
+            <button id="resetProgress" class="clickable-square" title="Reset Progress">
+                <img src="refresh.svg" alt="" />
+            </button>
+
+            <!-- Questions will be dynamically inserted here -->
         </div>
-        <!-- Dropdown for options -->
-        <div class="dropdown">
-            <button class="dropdown-btn">
-    <div class="clickable-square">
-        <img src="options.svg" alt="Options">
     </div>
-</button>
-            <div class="dropdown-content">
-            <button class="report-btn">
-    <img src="report-icon.svg" width="16" style="margin-right:10px;" alt="Report">
-    Report Question
-</button>
-                <!-- Future options can go here -->
+
+    <!-- QUESTION TEMPLATE (Hidden) -->
+    <div id="questionTemplate" class="question-box" style="display:none;">
+        <div class="question-header">
+            <div class="question-header-left">
+                <span class="qnum">Question 1</span>
+                <div class="tags"></div>
+            </div>
+            <!-- Dropdown for options -->
+            <div class="dropdown">
+                <button class="dropdown-btn clickable-square">
+                    <img src="options.svg" alt="Options">
+                </button>
+                <div class="dropdown-content">
+                    <button class="report-btn">
+                        <img src="report-icon.svg" width="16" style="margin-right:10px;" alt="Report">
+                        Report Question
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="question-text">Question text here</div>
+        <div class="options">
+            <div class="option"><div class="option-circle">A</div> Option 1</div>
+            <div class="option"><div class="option-circle">B</div> Option 2</div>
+            <div class="option"><div class="option-circle">C</div> Option 3</div>
+            <div class="option"><div class="option-circle">D</div> Option 4</div>
+        </div>
+
+<!-- Input row under options -->
+<div class="answer-row">
+    <img src="iconflashing.svg" alt="Left icon" class="answer-icon left">
+
+    <input
+    type="text"
+    class="answer-input"
+    placeholder="Ask Kiji for help..."
+>
+
+    <button class="enter-btn">
+        <img src="submit.svg" alt="">
+    </button>
+</div>
+
+        <!-- Predicted grade panel -->
+        <div class="predicted-grade">
+            <div class="grade-circle">A*</div>
+            <div class="grade-list">
+                <!-- Rows will be filled dynamically -->
             </div>
         </div>
     </div>
-    <div class="question-text">Question text here</div>
-    <div class="options">
-        <div class="option"><div class="option-circle">A</div> Option 1</div>
-        <div class="option"><div class="option-circle">B</div> Option 2</div>
-        <div class="option"><div class="option-circle">C</div> Option 3</div>
-        <div class="option"><div class="option-circle">D</div> Option 4</div>
-    </div>
-</div>
 
-<script>
-    window.addEventListener("load", () => {
-        setTimeout(() => {
-            document.getElementById("splash").classList.add("hide");
-        }, 3000);
-    });
-</script>
-
-<!-- REPORT MODAL -->
-<div class="report-modal" id="reportModal">
-    <div class="report-modal-content">
-        <h3>Report Question</h3>
-        <form action="https://formsubmit.co/lukas.ugianskis@gmail.com" method="POST">
-            <label><input type="checkbox" name="issue" value="Incorrect Answer"> Incorrect Answer</label>
-            <label><input type="checkbox" name="issue" value="Typo"> Typo</label>
-            <label><input type="checkbox" name="issue" value="Other"> Other</label>
-            <textarea name="details" placeholder="Describe the issue"></textarea>
-            <button type="submit">Submit Report</button>
-            <button type="button" id="closeModal" style="background:#ccc;color:#000;">Cancel</button>
-        </form>
-    </div>
-</div>
-
-<div id="splash">
-    <img src="iconflashing.svg" alt="App Icon">
-</div>
-
-<script>
-// TOGGLE OUTER FRAME
-const btn = document.getElementById("toggleOuter");
-const outer = document.getElementById("outer");
-const icon = document.getElementById("toggleIcon");
-const logo = document.getElementById("sidebarLogo");
-
-btn.addEventListener("click", () => {
-    outer.classList.toggle("expanded");
-    icon.classList.toggle("rotated");
-    logo.classList.toggle("show-text");
-});
-
-// ADD QUESTION FUNCTION
-let questionCount = 1;
-function addQuestion(questionText, options, correctIndex, tags, imageUrl = null, answerText = "", explanation = "") {
-    const container = document.querySelector(".innerContent");
-    const template = document.getElementById("questionTemplate");
-
-    const newQ = template.cloneNode(true);
-    newQ.style.display = "block";
-    newQ.id = "";
-
-    const currentQuestionIndex = questionCount - 1; // zero-based
-
-    newQ.querySelector(".qnum").textContent = `Question ${questionCount++}`;
-    newQ.querySelector(".question-text").textContent = questionText;
-
-    // Optional image
-    if (imageUrl) {
-        const img = document.createElement("img");
-        img.src = imageUrl;
-        img.className = "question-image";
-        const optionsDiv = newQ.querySelector(".options");
-        newQ.insertBefore(img, optionsDiv);
-        img.style.maxWidth = "80%";
-        img.style.display = "block";
-        img.style.margin = "10px auto";
-    }
-
-    // Options
-    const optionDivs = newQ.querySelectorAll(".option");
-    const savedChoice = localStorage.getItem(`question-${currentQuestionIndex}`);
-    
-    optionDivs.forEach((div, i) => {
-    const circle = div.querySelector(".option-circle");
-    circle.textContent = String.fromCharCode(65 + i);
-    div.childNodes[1].textContent = options[i];
-
-    // Restore saved choice
-    if (savedChoice && parseInt(savedChoice) === i) {
-        circle.classList.add(i === correctIndex ? "correct" : "wrong", "selected");
-        if (i === correctIndex) newQ.classList.add("correct");
-        else newQ.classList.add("wrong");
-    }
-
-    div.onclick = () => {
-        const circle = div.querySelector(".option-circle");
-        const questionBox = div.closest(".question-box");
-        const isSelected = circle.classList.contains("selected");
-
-        // Remove all highlights first
-        optionDivs.forEach(d => {
-            d.querySelector(".option-circle").classList.remove("correct", "wrong", "selected");
-        });
-        questionBox.classList.remove("correct", "wrong");
-
-        if (!isSelected) {
-            // Select this option
-            circle.classList.add("selected");
-            if (i === correctIndex) {
-                circle.classList.add("correct");
-                questionBox.classList.add("correct");
-            } else {
-                circle.classList.add("wrong");
-                questionBox.classList.add("wrong");
-            }
-            // Save choice
-            localStorage.setItem("lastQuestionAnswered", currentQuestionIndex);
-            localStorage.setItem(`question-${currentQuestionIndex}`, i);
-        } else {
-            // User deselected the option
-            localStorage.removeItem(`question-${currentQuestionIndex}`);
-
-            // Remove lastQuestionAnswered if this was the last one
-            const lastAnswered = parseInt(localStorage.getItem("lastQuestionAnswered"));
-            if (lastAnswered === currentQuestionIndex) {
-                localStorage.removeItem("lastQuestionAnswered");
-            }
-        }
-    };
-});
-
-    // Tags
-    const tagsContainer = newQ.querySelector(".tags");
-    tagsContainer.innerHTML = "";
-    tags.forEach(tagText => {
-        const tagSpan = document.createElement("span");
-        tagSpan.className = "tag";
-        tagSpan.textContent = tagText;
-        tagsContainer.appendChild(tagSpan);
-    });
-
-    // DROPDOWN
-    const dropdownBtn = newQ.querySelector('.dropdown-btn');
-    const dropdown = newQ.querySelector('.dropdown');
-    dropdownBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdown.classList.toggle('show');
-    });
-    window.addEventListener('click', () => { dropdown.classList.remove('show'); });
-
-    // ANSWERS BUTTON
-    const answersBtn = document.createElement("button");
-    answersBtn.textContent = "Answer";
-    answersBtn.style.color = "#44b6f3";
-    answersBtn.style.fontSize = "16px";
-    answersBtn.style.padding = "6px 12px";
-    answersBtn.style.borderRadius = "14px";
-    answersBtn.style.border = "0px solid #e6e6e6";
-    answersBtn.style.cursor = "pointer";
-    answersBtn.style.fontWeight = "600";
-    answersBtn.style.background = "#e2f4fe";
-    answersBtn.style.position = "absolute";
-    answersBtn.style.top = "0px";
-    answersBtn.style.right = "15px";
-    answersBtn.style.width = "80px";
-    answersBtn.style.height = "38px";
-    answersBtn.style.transition = "background 0.3s ease";
-
-    answersBtn.addEventListener("mouseover", () => answersBtn.style.background = "#cceafc");
-    answersBtn.addEventListener("mouseout", () => answersBtn.style.background = "#e2f4fe");
-
-    dropdown.parentNode.insertBefore(answersBtn, dropdown);
-
-    // Answers Modal
-    const modal = document.createElement("div");
-    modal.className = "answers-modal";
-    const modalContent = document.createElement("div");
-    modalContent.className = "answers-modal-content";
-    modalContent.innerHTML = `
-        <button class="close-answers">&times;</button>
-        <h3>Markscheme</h3>
-        <div class="answer-frame">
-            <p>${answerText}</p>
+    <!-- REPORT MODAL -->
+    <div class="report-modal" id="reportModal">
+        <div class="report-modal-content">
+            <h3>Report Question</h3>
+            <form action="https://formsubmit.co/lukas.ugianskis@gmail.com" method="POST">
+                <label><input type="checkbox" name="issue" value="Incorrect Answer"> Incorrect Answer</label>
+                <label><input type="checkbox" name="issue" value="Typo"> Typo</label>
+                <label><input type="checkbox" name="issue" value="Other"> Other</label>
+                <textarea name="details" placeholder="Describe the issue"></textarea>
+                <button type="submit">Submit Report</button>
+                <button type="button" id="closeModal" style="background:#ccc;color:#000;">Cancel</button>
+            </form>
         </div>
-    `;
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
+    </div>
 
-    answersBtn.onclick = () => modal.classList.add("show");
-    modalContent.querySelector(".close-answers").onclick = () => modal.classList.remove("show");
-    modal.addEventListener("click", (e) => { if(e.target===modal) modal.classList.remove("show"); });
+    <!-- NOTEBOOK MODAL -->
+<div class="notebook-modal" id="notebookModal">
+    <div class="notebook-content">
+        <button class="close-notebook" id="closeNotebook">&times;</button>
+        
+        <div class="notebook-left" id="notebookLeft">
+            <div class="notebook-question-container" id="notebookQuestionContainer">
+                <!-- Question content will be copied here -->
+            </div>
+        </div>
+        
+        <div class="notebook-divider" id="notebookDivider"></div>
+        
+        <div class="notebook-right">
+            <div class="notebook-tabs">
+                <button class="notebook-tab active" data-tab="draw">Draw</button>
+                <button class="notebook-tab" data-tab="notes">Notes</button>
+            </div>
+            
+            <div class="notebook-right-container">
+                <div class="notebook-toolbar">
+                    <button class="tool-btn active" id="penTool" title="Pen">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#333">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                        </svg>
+                    </button>
+                    <button class="tool-btn" id="eraserTool" title="Eraser">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#333">
+                            <path d="M16.24 3.56l4.95 4.94c.78.79.78 2.05 0 2.84L12 20.53a4.008 4.008 0 0 1-5.66 0L2.81 17c-.78-.79-.78-2.05 0-2.84l10.83-10.88c.79-.78 2.05-.78 2.83 0L16.24 3.56zM4.22 15.58l3.54 3.53c.78.79 2.04.79 2.83 0l3.53-3.53-4.95-4.95-4.95 4.95z"/>
+                        </svg>
+                    </button>
+                    <div class="tool-color" title="Color">
+                        <input type="color" id="colorPicker" value="#333333">
+                    </div>
+                    <div class="tool-size">
+                        <span>Size:</span>
+                        <input type="range" id="sizeSlider" min="1" max="20" value="2">
+                    </div>
+                    <button class="tool-btn notebook-clear" id="clearNotebook">
+                        Clear
+                    </button>
+                </div>
+                
+                <div class="notebook-tab-content">
+                    <div class="tab-pane active" id="drawPane">
+                        <div id="drawCanvasContainer">
+                            <canvas id="notebookCanvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="notesPane">
+                        <textarea class="notebook-textarea" id="notesTextarea" placeholder="Type your notes and working out here..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    container.appendChild(newQ);
-}
+    <!-- SPLASH SCREEN -->
+    <div id="splash">
+        <img src="iconflashing.svg" alt="App Icon">
+    </div>
 
-// EXAMPLES
-addQuestion(
-    "In a plant, what is formed by a group of xylem vessels?",
-    ["A cell","A tissue","An organ","An organ system"],
-    1,
-    ["IGCSE", "Biology"],
-    null,
-    "A tissue",
-    "Xylem vessels are grouped together to form a tissue, which helps in transporting water and minerals."
-);
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-addQuestion(
-    "How does a liver cell differ from a palisade cell?",
-    ["A liver cell has a membrane","A liver cell has a vacuole","A liver cell has no cell wall","A liver cell has no cytoplasm"],
-    2,
-    ["IGCSE", "Biology"],
-    null,
-    "A liver cell has no cell wall",
-    "Liver cells are animal cells and do not have a cell wall, whereas palisade cells are plant cells and do have a cell wall."
-);
+    <!-- Main Application Script -->
+    <script>
+        // ========== FIREBASE CONFIGURATION ==========
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjBxNmeQ6IRi8GNwiDE8nQZnlBP_9PiEs",
+            authDomain: "intellecta-bae6d.firebaseapp.com",
+            projectId: "intellecta-bae6d",
+            storageBucket: "intellecta-bae6d.firebasestorage.app",
+            messagingSenderId: "934037113488",
+            appId: "1:934037113488:web:cec0e29bb0ab29b6302615",
+            measurementId: "G-CDWB3D7Q8L"
+        };
 
-addQuestion(
-    "How does cell P differ from cell Q?",
-    ["It has no cell wall","It has no chloroplasts","It has no nucleus","It has no vacuole"],
-    1,
-    ["IGCSE", "Biology"],
-    "celldigram1.png",
-    "It has no chloroplasts",
-    "The small dots represent chloroplasts, which are found in plant cells but not in animal cells."
-);
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-// SCROLL TO LAST ANSWERED QUESTION AFTER 1 SECOND
-window.addEventListener("load", () => {
-    setTimeout(() => {
-        const lastAnswered = localStorage.getItem("lastQuestionAnswered");
-        if (lastAnswered !== null) {
-            const questionBoxes = document.querySelectorAll(".question-box");
-            const index = parseInt(lastAnswered);
-            if (questionBoxes[index]) {
-                questionBoxes[index].scrollIntoView({ behavior: "smooth", block: "start" });
+        // ========== GLOBAL VARIABLES ==========
+        let questionCount = 1;
+        let currentTopic = '';
+        let gradeShownMap = new WeakMap();
+        const questionsContainer = document.getElementById('questionsContainer');
+        const chapterTitle = document.getElementById('chapterTitle');
+        
+        // ========== URL PARAMETER HANDLING ==========
+        function getTopicFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('topic') || 'b1';
+        }
+
+        function loadTopicScript(topic) {
+            currentTopic = topic;
+            const script = document.createElement('script');
+            script.src = `topics/${topic}.js`;
+            script.onload = () => {
+                console.log(`Loaded topic: ${topic}`);
+                if (window.topicData) {
+                    initTopic();
+                }
+            };
+            script.onerror = () => {
+                console.error(`Failed to load topic: ${topic}`);
+                chapterTitle.textContent = 'Topic Not Found';
+                questionsContainer.innerHTML = '<p style="color: #666; text-align: center; margin-top: 100px;">No questions found for this topic.</p>';
+            };
+            document.head.appendChild(script);
+        }
+
+        // ========== TOPIC INITIALIZATION ==========
+        function initTopic() {
+            if (!window.topicData) {
+                console.error('No topic data found');
+                return;
+            }
+
+            const data = window.topicData;
+            
+            // Set chapter title
+            if (data.chapterTitle) {
+                chapterTitle.textContent = data.chapterTitle;
+            }
+
+            // Clear previous questions
+            questionsContainer.querySelectorAll('.question-box:not(#questionTemplate)').forEach(q => q.remove());
+            questionCount = 1;
+
+            // Add questions
+            if (data.questions && Array.isArray(data.questions)) {
+                data.questions.forEach(qData => {
+                    if (qData.type === 'text') {
+                        addTextQuestion(
+                            qData.question,
+                            qData.markScheme,
+                            qData.keywords,
+                            qData.tags || [],
+                            qData.difficulty || 'easy'
+                        );
+                    } else if (qData.type === 'connect') {
+                        addConnectQuestion(
+                            qData.question,
+                            qData.terms,
+                            qData.explanations,
+                            qData.correctPairs,
+                            qData.tags || [],
+                            qData.difficulty || 'medium',
+                            qData.answer || '',
+                            qData.explanation || ''
+                        );
+                    } else {
+                        addQuestion(
+                            qData.question,
+                            qData.options,
+                            qData.correctIndex,
+                            qData.tags || [],
+                            qData.difficulty || 'easy',
+                            qData.imageUrl || null,
+                            qData.answer || '',
+                            qData.explanation || ''
+                        );
+                    }
+                });
+            }
+
+            // Initialize filters
+            initFilters();
+            
+            // Load user progress
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    console.log("User logged in:", user.uid);
+                    loadProgress(user.uid);
+                } else {
+                    console.log("No user signed in");
+                    loadLocalProgress();
+                }
+            });
+        }
+
+        // ========== FIREBASE FUNCTIONS ==========
+        function saveChoice(userId, questionIndex, selectedOption) {
+            db.collection("userProgress").doc(userId).set({
+                [`question-${currentTopic}-${questionIndex}`]: selectedOption
+            }, { merge: true })
+            .then(() => console.log("Progress saved"))
+            .catch(err => console.error("Error saving progress:", err));
+        }
+
+        function loadProgress(userId) {
+            db.collection("userProgress").doc(userId).get()
+                .then(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        restoreProgress(data);
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+
+        function loadLocalProgress() {
+            const progress = JSON.parse(localStorage.getItem(`progress-${currentTopic}`) || '{}');
+            restoreProgress(progress);
+        }
+
+        function restoreProgress(data) {
+            for (let key in data) {
+                if (key.startsWith(`question-${currentTopic}-`)) {
+                    const questionIndex = parseInt(key.split('-')[2]);
+                    const choice = data[key];
+                    const questionBoxes = document.querySelectorAll(".question-box");
+                    if (questionBoxes[questionIndex]) {
+                        const optionDiv = questionBoxes[questionIndex].querySelectorAll(".option")[choice];
+                        if (optionDiv) {
+                            optionDiv.querySelector(".option-circle").classList.add("selected");
+                        }
+                    }
+                }
             }
         }
-    }, 500);
-});
-</script>
-</head>
-</script>
 
+        // ========== QUESTION FUNCTIONS ==========
+        function addQuestion(questionText, options, correctIndex, tags, difficulty, imageUrl, answerText, explanation) {
+            difficulty = difficulty || "easy";
+            const container = document.querySelector(".innerContent");
+            const template = document.getElementById("questionTemplate");
+
+            const newQ = template.cloneNode(true);
+            newQ.style.display = "block";
+            newQ.id = "";
+
+            const currentQuestionIndex = questionCount - 1;
+
+            newQ.querySelector(".qnum").textContent = `Question ${questionCount++}`;
+            newQ.querySelector(".question-text").textContent = questionText;
+
+            // Optional image
+            if (imageUrl) {
+                const img = document.createElement("img");
+                img.src = imageUrl;
+                img.className = "question-image";
+                const optionsDiv = newQ.querySelector(".options");
+                newQ.insertBefore(img, optionsDiv);
+                img.style.maxWidth = "80%";
+                img.style.display = "block";
+                img.style.margin = "10px auto";
+            }
+
+            // Options
+            const optionDivs = newQ.querySelectorAll(".option");
+            const progress = JSON.parse(localStorage.getItem(`progress-${currentTopic}`) || '{}');
+            const savedChoice = progress[currentQuestionIndex];
+            
+            optionDivs.forEach((div, i) => {
+                const circle = div.querySelector(".option-circle");
+                circle.textContent = String.fromCharCode(65 + i);
+                div.childNodes[1].textContent = options[i];
+
+                // Restore saved choice
+                if (savedChoice !== undefined && parseInt(savedChoice) === i) {
+                    circle.classList.add(i === correctIndex ? "correct" : "wrong", "selected");
+                    if (i === correctIndex) newQ.classList.add("correct");
+                    else newQ.classList.add("wrong");
+                }
+
+                div.onclick = () => {
+                    const circle = div.querySelector(".option-circle");
+                    const questionBox = div.closest(".question-box");
+                    const isSelected = circle.classList.contains("selected");
+
+                    // Remove all highlights first
+                    optionDivs.forEach(d => {
+                        d.querySelector(".option-circle").classList.remove("correct", "wrong", "selected");
+                    });
+                    questionBox.classList.remove("correct", "wrong");
+
+                    if (!isSelected) {
+                        // Select this option
+                        circle.classList.add("selected");
+                        if (i === correctIndex) {
+                            circle.classList.add("correct");
+                            questionBox.classList.add("correct");
+                        } else {
+                            circle.classList.add("wrong");
+                            questionBox.classList.add("wrong");
+                        }
+
+                        // Save choice
+                        if (auth.currentUser) {
+                            saveChoice(auth.currentUser.uid, currentQuestionIndex, i);
+                        } else {
+                            const progress = JSON.parse(localStorage.getItem(`progress-${currentTopic}`) || '{}');
+                            progress[currentQuestionIndex] = i;
+                            localStorage.setItem(`progress-${currentTopic}`, JSON.stringify(progress));
+                        }
+                    } else {
+                        // Deselect
+                        circle.classList.remove("selected", "correct", "wrong");
+                        questionBox.classList.remove("correct", "wrong");
+
+                        if (auth.currentUser) {
+                            db.collection("userProgress").doc(auth.currentUser.uid).update({
+                                [`question-${currentTopic}-${currentQuestionIndex}`]: firebase.firestore.FieldValue.delete()
+                            });
+                        } else {
+                            const progress = JSON.parse(localStorage.getItem(`progress-${currentTopic}`) || '{}');
+                            delete progress[currentQuestionIndex];
+                            localStorage.setItem(`progress-${currentTopic}`, JSON.stringify(progress));
+                        }
+                    }
+                };
+            });
+
+            // Tags
+            const tagsContainer = newQ.querySelector(".tags");
+            tagsContainer.innerHTML = "";
+            tags.forEach(tagText => {
+                const tagSpan = document.createElement("span");
+                tagSpan.className = "tag";
+                tagSpan.textContent = tagText;
+                tagsContainer.appendChild(tagSpan);
+            });
+
+            // Dropdown functionality
+            const dropdownBtn = newQ.querySelector('.dropdown-btn');
+            const dropdown = newQ.querySelector('.dropdown');
+            dropdownBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('show');
+            });
+            window.addEventListener('click', () => { dropdown.classList.remove('show'); });
+
+            // Difficulty icon
+            const difficultyIcon = document.createElement("img");
+            const iconMap = {
+                "easy": "null.svg",
+                "medium": "null.svg",
+                "hard": "null.svg",
+            };
+            difficultyIcon.src = iconMap[difficulty] || "null.svg";
+            
+            // Size adjustments
+            const sizeMap = {
+                "easy": { width: "30px", height: "30px", top: "2.5px" },
+                "medium": { width: "55px", height: "55px", top: "-9px" },
+                "hard": { width: "72px", height: "72px", top: "-18px" }
+            };
+            
+            const size = sizeMap[difficulty] || sizeMap.easy;
+            Object.assign(difficultyIcon.style, {
+                position: "absolute",
+                right: "105px",
+                opacity: "0.8",
+                zIndex: "5",
+                width: size.width,
+                height: size.height,
+                top: size.top
+            });
+
+            // Button group for Notebook and Answer
+            const buttonGroup = document.createElement("div");
+            buttonGroup.className = "button-group";
+
+            // Notebook button
+            const notebookBtn = document.createElement("button");
+            notebookBtn.textContent = "Notebook";
+            notebookBtn.className = "notebook-btn";
+            notebookBtn.onclick = () => openNotebook(newQ);
+
+            // Answer button
+            const answerBtn = document.createElement("button");
+            answerBtn.textContent = "Answer";
+            answerBtn.className = "answer-btn";
+
+            // Answers Modal
+            const modal = document.createElement("div");
+            modal.className = "answers-modal";
+            const modalContent = document.createElement("div");
+            modalContent.className = "answers-modal-content";
+            modalContent.innerHTML = `
+                <button class="close-answers">&times;</button>
+                <h3>Markscheme</h3>
+                <div class="answer-frame">
+                    <p>${answerText}</p>
+                </div>
+                ${explanation ? `<p style="margin-top: 10px; color: #666;">${explanation}</p>` : ''}
+            `;
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+
+            answerBtn.onclick = () => modal.classList.add("show");
+            modalContent.querySelector(".close-answers").onclick = () => modal.classList.remove("show");
+            modal.addEventListener("click", (e) => { if(e.target===modal) modal.classList.remove("show"); });
+
+            buttonGroup.appendChild(notebookBtn);
+            buttonGroup.appendChild(answerBtn);
+
+            // Insert button group and difficulty icon
+            dropdown.parentNode.insertBefore(difficultyIcon, dropdown);
+            dropdown.parentNode.insertBefore(buttonGroup, dropdown);
+
+            container.appendChild(newQ);
+        }
+
+        // ========== CONNECT QUESTION FUNCTION ==========
+        function addConnectQuestion(questionText, terms, explanations, correctPairs, tags, difficulty, answerText, explanation) {
+            const container = document.querySelector(".innerContent");
+            const template = document.getElementById("questionTemplate");
+            const q = template.cloneNode(true);
+
+            // Setup
+            q.style.display = "block";
+            q.id = "";
+            q.classList.add("connect-question");
+            q.querySelector(".qnum").textContent = `Question ${questionCount++}`;
+            q.querySelector(".question-text").textContent = questionText;
+            q.querySelector(".options").remove();
+            // DON'T remove the answer-row - we want to keep it for connection questions
+
+            // Create connect container
+            const connectContainer = document.createElement("div");
+            connectContainer.className = "connect-container";
+            
+            // Add instruction
+            const instruction = document.createElement("p");
+            instruction.className = "connect-instruction";
+            instruction.textContent = "Click a term on the left, then click its matching explanation on the right.";
+            q.querySelector(".question-text").appendChild(instruction);
+
+            // Create terms column
+            const termsColumn = document.createElement("div");
+            termsColumn.className = "connect-column";
+            
+            // Create explanations column
+            const explanationsColumn = document.createElement("div");
+            explanationsColumn.className = "connect-column";
+            
+            // Add terms
+            terms.forEach((term, index) => {
+                const termItem = document.createElement("div");
+                termItem.className = "connect-item";
+                termItem.dataset.index = index;
+                termItem.dataset.type = "term";
+                
+                const numberSpan = document.createElement("span");
+                numberSpan.className = "connect-item-number";
+                numberSpan.textContent = index + 1;
+                
+                const textSpan = document.createElement("span");
+                textSpan.textContent = term;
+                
+                termItem.appendChild(numberSpan);
+                termItem.appendChild(textSpan);
+                termsColumn.appendChild(termItem);
+            });
+            
+            // Add explanations (shuffled)
+            const shuffledExplanations = [...explanations].sort(() => Math.random() - 0.5);
+            shuffledExplanations.forEach((expl, index) => {
+                const explItem = document.createElement("div");
+                explItem.className = "connect-item";
+                explItem.dataset.index = index;
+                explItem.dataset.type = "explanation";
+                explItem.dataset.originalIndex = explanations.indexOf(expl);
+                
+                const textSpan = document.createElement("span");
+                textSpan.textContent = expl;
+                
+                explItem.appendChild(textSpan);
+                explanationsColumn.appendChild(explItem);
+            });
+            
+            connectContainer.appendChild(termsColumn);
+            connectContainer.appendChild(explanationsColumn);
+            
+            // Insert connect container before the answer-row
+            const answerRow = q.querySelector(".answer-row");
+            q.insertBefore(connectContainer, answerRow);
+        
+            // Tags
+            const tagsContainer = q.querySelector(".tags");
+            tagsContainer.innerHTML = "";
+            tags.forEach(t => {
+                const tag = document.createElement("span");
+                tag.className = "tag";
+                tag.textContent = t;
+                tagsContainer.appendChild(tag);
+            });
+
+            // Connection logic - FIXED VERSION
+            let selectedTerm = null;
+            let selectedExplanation = null;
+            const connections = new Map(); // termIndex -> explanationIndex
+            
+            // Store state in the question element for reset functionality
+            q._connectState = {
+                selectedTerm: null,
+                selectedExplanation: null,
+                connections: new Map(),
+                correctPairs: correctPairs
+            };
+            
+            function updateSelection() {
+                // Reset all selections
+                q.querySelectorAll('.connect-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                // Highlight selected items
+                if (selectedTerm) {
+                    selectedTerm.classList.add('selected');
+                }
+                if (selectedExplanation) {
+                    selectedExplanation.classList.add('selected');
+                }
+                
+                // If both are selected, create connection
+                if (selectedTerm && selectedExplanation) {
+                    const termIndex = parseInt(selectedTerm.dataset.index);
+                    const explIndex = parseInt(selectedExplanation.dataset.originalIndex);
+                    
+                    connections.set(termIndex, explIndex);
+                    
+                    // Reset selection
+                    selectedTerm = null;
+                    selectedExplanation = null;
+                    
+                    // Update visual connections
+                    updateConnectionVisuals();
+                }
+            }
+            
+            function updateConnectionVisuals() {
+                // Reset all visuals first
+                q.querySelectorAll('.connect-item').forEach(item => {
+                    item.classList.remove('correct', 'wrong');
+                });
+                
+                // Apply correct/wrong classes
+                connections.forEach((explIndex, termIndex) => {
+                    const termItem = q.querySelector(`.connect-item[data-type="term"][data-index="${termIndex}"]`);
+                    const explItem = q.querySelector(`.connect-item[data-type="explanation"][data-original-index="${explIndex}"]`);
+                    
+                    if (termItem && explItem) {
+                        // Check if this connection is correct
+                        const isCorrect = correctPairs.some(pair => 
+                            pair[0] === termIndex && pair[1] === explIndex
+                        );
+                        
+                        if (isCorrect) {
+                            termItem.classList.add('correct');
+                            explItem.classList.add('correct');
+                        } else {
+                            termItem.classList.add('wrong');
+                            explItem.classList.add('wrong');
+                        }
+                    }
+                });
+                
+                // Check if all connections are correct
+                let allCorrect = true;
+                let allConnected = connections.size === correctPairs.length;
+                
+                connections.forEach((explIndex, termIndex) => {
+                    const isCorrect = correctPairs.some(pair => 
+                        pair[0] === termIndex && pair[1] === explIndex
+                    );
+                    if (!isCorrect) allCorrect = false;
+                });
+                
+                // Update question box outline
+                if (allConnected && allCorrect) {
+                    q.classList.add('correct');
+                    q.classList.remove('wrong');
+                } else if (allConnected && !allCorrect) {
+                    q.classList.add('wrong');
+                    q.classList.remove('correct');
+                } else {
+                    q.classList.remove('correct', 'wrong');
+                }
+            }
+            
+            // Add click handlers to connect items
+            q.addEventListener('click', (e) => {
+                const connectItem = e.target.closest('.connect-item');
+                if (!connectItem) return;
+                
+                // If clicking on a term
+                if (connectItem.dataset.type === 'term') {
+                    // If this term is already selected, deselect it
+                    if (selectedTerm === connectItem) {
+                        selectedTerm = null;
+                    } else {
+                        selectedTerm = connectItem;
+                    }
+                    selectedExplanation = null;
+                } 
+                // If clicking on an explanation
+                else if (connectItem.dataset.type === 'explanation') {
+                    // If this explanation is already selected, deselect it
+                    if (selectedExplanation === connectItem) {
+                        selectedExplanation = null;
+                    } else {
+                        selectedExplanation = connectItem;
+                    }
+                }
+                
+                updateSelection();
+            });
+        
+            
+            // Reset function for this specific question
+            q.resetConnectQuestion = function() {
+                selectedTerm = null;
+                selectedExplanation = null;
+                connections.clear();
+                
+                // Reset visual classes
+                q.querySelectorAll('.connect-item').forEach(item => {
+                    item.classList.remove('selected', 'correct', 'wrong');
+                });
+                
+                q.classList.remove('correct', 'wrong');
+                q._connectState.selectedTerm = null;
+                q._connectState.selectedExplanation = null;
+                q._connectState.connections.clear();
+            };
+
+            // Button group for Notebook and Answer
+            const buttonGroup = document.createElement("div");
+            buttonGroup.className = "button-group";
+
+            // Notebook button
+            const notebookBtn = document.createElement("button");
+            notebookBtn.textContent = "Notebook";
+            notebookBtn.className = "notebook-btn";
+            notebookBtn.onclick = () => openNotebook(q);
+
+            // Answer button
+            const answerBtn = document.createElement("button");
+            answerBtn.textContent = "Answer";
+            answerBtn.className = "answer-btn";
+
+            // Answers Modal
+            const modal = document.createElement("div");
+            modal.className = "answers-modal";
+            const modalContent = document.createElement("div");
+            modalContent.className = "answers-modal-content";
+            
+            // Format answer text for connect questions
+            let formattedAnswer = "Correct connections:<br><br>";
+            correctPairs.forEach((pair, index) => {
+                const term = terms[pair[0]];
+                const expl = explanations[pair[1]];
+                formattedAnswer += `${index + 1}. ${term} → ${expl}<br>`;
+            });
+            
+            modalContent.innerHTML = `
+                <button class="close-answers">&times;</button>
+                <h3>Markscheme</h3>
+                <div class="answer-frame">
+                    <p>${formattedAnswer}</p>
+                </div>
+                ${explanation ? `<p style="margin-top: 10px; color: #666;">${explanation}</p>` : ''}
+            `;
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+
+            answerBtn.onclick = () => modal.classList.add("show");
+            modalContent.querySelector(".close-answers").onclick = () => modal.classList.remove("show");
+            modal.addEventListener("click", (e) => { if(e.target===modal) modal.classList.remove("show"); });
+
+            buttonGroup.appendChild(notebookBtn);
+            buttonGroup.appendChild(answerBtn);
+            
+            // Insert button group
+            const dropdown = q.querySelector('.dropdown');
+            dropdown.parentNode.insertBefore(buttonGroup, dropdown);
+
+            container.appendChild(q);
+        }
+
+               function addTextQuestion(questionText, markScheme, keywordsList, tags, difficulty = "easy") {
+            const container = document.querySelector(".innerContent");
+            const template = document.getElementById("questionTemplate");
+            const q = template.cloneNode(true);
+
+            // Setup
+            q.style.display = "block";
+            q.id = "";
+            q.querySelector(".qnum").textContent = `Question ${questionCount++}`;
+            q.querySelector(".question-text").textContent = questionText;
+            q.querySelector(".options").remove();
+
+            // Short answer UI
+            const sa = document.createElement("div");
+            sa.className = "short-answer";
+            sa.innerHTML = `
+                <textarea placeholder="Type your answer here..."></textarea>
+                <button class="check-answer-btn">Check answer</button>
+            `;
+            q.appendChild(sa);
+
+            // Tags
+            const tagsContainer = q.querySelector(".tags");
+            tagsContainer.innerHTML = "";
+            tags.forEach(t => {
+                const tag = document.createElement("span");
+                tag.className = "tag";
+                tag.textContent = t;
+                tagsContainer.appendChild(tag);
+            });
+
+            const textarea = sa.querySelector("textarea");
+            const btn = sa.querySelector("button");
+
+            // Answer checking
+            const checkAnswer = () => {
+                const user = normalizeText(textarea.value);
+
+                // Remove old panel if exists
+                const oldPanel = q.querySelector(".predicted-grade");
+                if (oldPanel) oldPanel.remove();
+
+                let score = 0;
+                const panel = document.createElement("div");
+                panel.className = "predicted-grade";
+
+                const circle = document.createElement("div");
+                circle.className = "grade-circle";
+
+                const list = document.createElement("div");
+                list.className = "grade-list";
+
+                markScheme.forEach((point, i) => {
+                    const keywords = keywordsList[i];
+                    const hit = keywords.some(k => user.includes(normalizeText(k)));
+
+                    if (hit) score++;
+
+                    const row = document.createElement("div");
+                    row.className = "grade-row" + (hit ? "" : " wrong");
+                    row.innerHTML = `
+                        <div class="icon">${hit ? "✓" : "✕"}</div>
+                        ${point}
+                    `;
+                    list.appendChild(row);
+                });
+
+                circle.textContent = `${score}/${markScheme.length}`;
+                panel.appendChild(circle);
+                panel.appendChild(list);
+                q.appendChild(panel);
+
+                requestAnimationFrame(() => panel.classList.add("show"));
+                q.classList.toggle("correct", score === markScheme.length);
+                q.classList.toggle("wrong", score < markScheme.length);
+            };
+
+            btn.onclick = checkAnswer;
+            textarea.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    checkAnswer();
+                }
+            });
+
+            // Button group for Notebook and Answer
+            const buttonGroup = document.createElement("div");
+            buttonGroup.className = "button-group";
+
+            // Notebook button
+            const notebookBtn = document.createElement("button");
+            notebookBtn.textContent = "Notebook";
+            notebookBtn.className = "notebook-btn";
+            notebookBtn.onclick = () => openNotebook(q);
+
+            buttonGroup.appendChild(notebookBtn);
+            
+            // Insert button group
+            const dropdown = q.querySelector('.dropdown');
+            dropdown.parentNode.insertBefore(buttonGroup, dropdown);
+
+            container.appendChild(q);
+        } // <-- THIS CLOSING BRACE WAS MISSING
+
+        function normalizeText(text) {
+            return text
+                .toLowerCase()
+                .replace(/[^a-z0-9 ]/g, "")
+                .trim();
+        }
+
+        // ========== ENHANCED NOTEBOOK FUNCTIONALITY ==========
+        function initNotebook() {
+            const notebookModal = document.getElementById('notebookModal');
+            const closeNotebookBtn = document.getElementById('closeNotebook');
+            const canvas = document.getElementById('notebookCanvas');
+            const notesTextarea = document.getElementById('notesTextarea');
+            const penTool = document.getElementById('penTool');
+            const eraserTool = document.getElementById('eraserTool');
+            const clearNotebookBtn = document.getElementById('clearNotebook');
+            const colorPicker = document.getElementById('colorPicker');
+            const sizeSlider = document.getElementById('sizeSlider');
+            const notebookDivider = document.getElementById('notebookDivider');
+            const notebookLeft = document.getElementById('notebookLeft');
+            const notebookTabs = document.querySelectorAll('.notebook-tab');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+            
+            let ctx = canvas.getContext('2d');
+            let drawing = false;
+            let currentTool = 'pen';
+            let currentColor = '#333333';
+            let currentSize = 2;
+            let lastX = 0;
+            let lastY = 0;
+            let isResizing = false;
+            
+            // Set canvas size
+            function resizeCanvas() {
+                const container = document.getElementById('drawCanvasContainer');
+                canvas.width = container.clientWidth;
+                canvas.height = container.clientHeight;
+                
+                // Set white background
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            // Initialize canvas
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Clear canvas
+            function clearCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            clearCanvas();
+            
+            // Drawing functions
+            function startDrawing(e) {
+                drawing = true;
+                const rect = canvas.getBoundingClientRect();
+                lastX = e.clientX - rect.left;
+                lastY = e.clientY - rect.top;
+                draw(e);
+            }
+            
+            function stopDrawing() {
+                drawing = false;
+                ctx.beginPath();
+            }
+            
+            function draw(e) {
+                if (!drawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                let x, y;
+                
+                if (e.type.includes('touch')) {
+                    x = e.touches[0].clientX - rect.left;
+                    y = e.touches[0].clientY - rect.top;
+                } else {
+                    x = e.clientX - rect.left;
+                    y = e.clientY - rect.top;
+                }
+                
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                
+                if (currentTool === 'pen') {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = currentColor;
+                    ctx.lineWidth = currentSize;
+                } else if (currentTool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = currentSize * 3; // Make eraser bigger
+                }
+                
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                
+                lastX = x;
+                lastY = y;
+            }
+            
+            // Event listeners for drawing
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseleave', stopDrawing);
+            
+            // Touch events for mobile
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                startDrawing(e);
+            });
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                draw(e);
+            });
+            canvas.addEventListener('touchend', stopDrawing);
+            
+            // Tool selection
+            penTool.addEventListener('click', () => {
+                currentTool = 'pen';
+                penTool.classList.add('active');
+                eraserTool.classList.remove('active');
+                canvas.style.cursor = 'crosshair';
+            });
+            
+            eraserTool.addEventListener('click', () => {
+                currentTool = 'eraser';
+                eraserTool.classList.add('active');
+                penTool.classList.remove('active');
+                canvas.style.cursor = 'cell';
+            });
+            
+            colorPicker.addEventListener('input', (e) => {
+                currentColor = e.target.value;
+            });
+            
+            sizeSlider.addEventListener('input', (e) => {
+                currentSize = parseInt(e.target.value);
+            });
+            
+            clearNotebookBtn.addEventListener('click', () => {
+                if (document.querySelector('.notebook-tab.active').dataset.tab === 'draw') {
+                    clearCanvas();
+                } else {
+                    notesTextarea.value = '';
+                }
+            });
+            
+            // Tab switching
+            notebookTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.dataset.tab;
+                    
+                    // Update active tab
+                    notebookTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding pane
+                    tabPanes.forEach(pane => pane.classList.remove('active'));
+                    document.getElementById(`${tabId}Pane`).classList.add('active');
+                    
+                    // Resize canvas when switching to draw tab
+                    if (tabId === 'draw') {
+                        setTimeout(resizeCanvas, 50);
+                    }
+                });
+            });
+            
+            // Resizable divider
+            notebookDivider.addEventListener('mousedown', startResize);
+            
+            function startResize(e) {
+                isResizing = true;
+                notebookDivider.classList.add('dragging');
+                document.addEventListener('mousemove', resize);
+                document.addEventListener('mouseup', stopResize);
+            }
+            
+            function resize(e) {
+                if (!isResizing) return;
+                
+                const containerRect = notebookModal.getBoundingClientRect();
+                const newLeftWidth = e.clientX - containerRect.left;
+                const containerWidth = containerRect.width;
+                
+                // Set min and max widths
+                const minWidth = 300;
+                const maxWidth = containerWidth - 300;
+                
+                if (newLeftWidth >= minWidth && newLeftWidth <= maxWidth) {
+                    notebookLeft.style.flex = `0 0 ${newLeftWidth}px`;
+                }
+            }
+            
+            function stopResize() {
+                isResizing = false;
+                notebookDivider.classList.remove('dragging');
+                document.removeEventListener('mousemove', resize);
+                document.removeEventListener('mouseup', stopResize);
+                
+                // Resize canvas after resizing
+                if (document.querySelector('.notebook-tab.active').dataset.tab === 'draw') {
+                    resizeCanvas();
+                }
+            }
+            
+            closeNotebookBtn.addEventListener('click', () => {
+                notebookModal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            });
+            
+            notebookModal.addEventListener('click', (e) => {
+                if (e.target === notebookModal) {
+                    notebookModal.classList.remove('show');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+
+        // Open notebook for a specific question
+        function openNotebook(questionElement) {
+            const notebookModal = document.getElementById('notebookModal');
+            const notebookQuestionContainer = document.getElementById('notebookQuestionContainer');
+            
+            // Clear previous content
+            notebookQuestionContainer.innerHTML = '';
+            
+            // Create question box for notebook
+            const notebookQuestionBox = document.createElement('div');
+            notebookQuestionBox.className = 'notebook-question-box';
+            
+            // Clone and clean up question elements
+            const questionText = questionElement.querySelector('.question-text').cloneNode(true);
+            const options = questionElement.querySelector('.options')?.cloneNode(true);
+            const connectContainer = questionElement.querySelector('.connect-container')?.cloneNode(true);
+            const shortAnswer = questionElement.querySelector('.short-answer')?.cloneNode(true);
+            
+            // Add question number and text
+            const qnum = questionElement.querySelector('.qnum').cloneNode(true);
+            notebookQuestionBox.appendChild(qnum);
+            notebookQuestionBox.appendChild(questionText);
+            
+            // Add appropriate question type content
+            if (options) {
+                notebookQuestionBox.appendChild(options);
+                // Make options interactable in notebook mode
+                const optionDivs = notebookQuestionBox.querySelectorAll('.option');
+                optionDivs.forEach((div, i) => {
+                    const circle = div.querySelector('.option-circle');
+                    circle.classList.remove('correct', 'wrong', 'selected');
+                    
+                    div.onclick = () => {
+                        const isSelected = circle.classList.contains('selected');
+                        
+                        // Toggle selection
+                        if (!isSelected) {
+                            circle.classList.add('selected');
+                        } else {
+                            circle.classList.remove('selected');
+                        }
+                    };
+                });
+            } else if (connectContainer) {
+                notebookQuestionBox.appendChild(connectContainer);
+                // Make connect items interactable
+                const connectItems = notebookQuestionBox.querySelectorAll('.connect-item');
+                connectItems.forEach(item => {
+                    item.classList.remove('correct', 'wrong', 'selected');
+                    
+                    item.onclick = () => {
+                        const isSelected = item.classList.contains('selected');
+                        
+                        // Toggle selection
+                        if (!isSelected) {
+                            item.classList.add('selected');
+                        } else {
+                            item.classList.remove('selected');
+                        }
+                    };
+                });
+            } else if (shortAnswer) {
+                notebookQuestionBox.appendChild(shortAnswer);
+                // Make textarea work in notebook
+                const textarea = notebookQuestionBox.querySelector('textarea');
+                const checkBtn = notebookQuestionBox.querySelector('.check-answer-btn');
+                
+                if (textarea && checkBtn) {
+                    checkBtn.onclick = () => {
+                        alert('Answer checked locally. For full evaluation, return to main view.');
+                    };
+                }
+            }
+            
+            notebookQuestionContainer.appendChild(notebookQuestionBox);
+            
+            // Reset drawing and notes
+            const canvas = document.getElementById('notebookCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('notesTextarea').value = '';
+            
+            // Reset to pen tool and draw tab
+            document.getElementById('penTool').click();
+            document.querySelector('.notebook-tab[data-tab="draw"]').click();
+            
+            // Show modal with smooth animation
+            notebookModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            // Resize canvas
+            setTimeout(() => {
+                const drawPane = document.getElementById('drawPane');
+                if (drawPane.classList.contains('active')) {
+                    const canvas = document.getElementById('notebookCanvas');
+                    const ctx = canvas.getContext('2d');
+                    const container = document.getElementById('drawCanvasContainer');
+                    canvas.width = container.clientWidth;
+                    canvas.height = container.clientHeight;
+                    ctx.fillStyle = '#fff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+            }, 100);
+        }
+
+        // ========== UI INITIALIZATION ==========
+        function initUI() {
+            // TOGGLE OUTER FRAME
+            const btn = document.getElementById("toggleOuter");
+            const outer = document.getElementById("outer");
+            const icon = document.getElementById("toggleIcon");
+            const logo = document.getElementById("sidebarLogo");
+
+            btn.addEventListener("click", () => {
+                outer.classList.toggle("expanded");
+                icon.classList.toggle("rotated");
+                logo.classList.toggle("show-text");
+                const innerContent = document.querySelector(".innerContent");
+                innerContent.classList.toggle("shifted");
+            });
+
+            // RESET PROGRESS BUTTON - FIXED VERSION
+            document.getElementById("resetProgress").addEventListener("click", () => {
+                const btn = document.getElementById("resetProgress");
+                btn.classList.add("spin");
+                setTimeout(() => btn.classList.remove("spin"), 400);
+
+                // Reset all questions
+                const questionBoxes = document.querySelectorAll(".question-box");
+                questionBoxes.forEach((box, index) => {
+                    if (box.id === "questionTemplate") return;
+                    
+                    box.classList.remove("correct", "wrong");
+                    
+                    // Reset MCQ options
+                    const optionCircles = box.querySelectorAll(".option-circle");
+                    optionCircles.forEach(circle => {
+                        circle.classList.remove("selected", "correct", "wrong");
+                    });
+                    
+                    // Reset connect questions
+                    const connectItems = box.querySelectorAll(".connect-item");
+                    if (connectItems.length > 0) {
+                        // This is a connect question
+                        if (box.resetConnectQuestion && typeof box.resetConnectQuestion === 'function') {
+                            box.resetConnectQuestion();
+                        } else {
+                            // Fallback reset
+                            connectItems.forEach(item => {
+                                item.classList.remove("selected", "correct", "wrong");
+                            });
+                        }
+                    }
+                    
+                    // Reset text areas
+                    const textareas = box.querySelectorAll("textarea");
+                    textareas.forEach(ta => ta.value = "");
+                    
+                    // Reset predicted grade panels
+                    const gradePanels = box.querySelectorAll(".predicted-grade");
+                    gradePanels.forEach(p => p.classList.remove("show"));
+                });
+
+                // Clear storage
+                if (auth.currentUser) {
+                    // For connect questions, we need to clear specific progress
+                    questionBoxes.forEach((box, index) => {
+                        if (box.id === "questionTemplate") return;
+                        const connectItems = box.querySelectorAll(".connect-item");
+                        if (connectItems.length > 0) {
+                            db.collection("userProgress").doc(auth.currentUser.uid).update({
+                                [`question-${currentTopic}-${index}`]: firebase.firestore.FieldValue.delete()
+                            });
+                        }
+                    });
+                } else {
+                    localStorage.removeItem(`progress-${currentTopic}`);
+                }
+            });
+
+            // REPORT MODAL
+            const reportModal = document.getElementById("reportModal");
+            const closeModalBtn = document.getElementById("closeModal");
+
+            document.addEventListener("click", (e) => {
+                const reportBtn = e.target.closest(".report-btn");
+                if (!reportBtn) return;
+                e.stopPropagation();
+                reportModal.style.display = "flex";
+            });
+
+            closeModalBtn.addEventListener("click", () => {
+                reportModal.style.display = "none";
+            });
+
+            reportModal.addEventListener("click", (e) => {
+                if (e.target === reportModal) {
+                    reportModal.style.display = "none";
+                }
+            });
+
+            // SPLASH SCREEN
+            window.addEventListener("load", () => {
+                setTimeout(() => {
+                    document.getElementById("splash").classList.add("hide");
+                }, 3000);
+            });
+
+            // Initialize notebook
+            initNotebook();
+        }
+
+        // ========== UI INITIALIZATION ==========
+        function initUI() {
+            // TOGGLE OUTER FRAME
+            const btn = document.getElementById("toggleOuter");
+            const outer = document.getElementById("outer");
+            const icon = document.getElementById("toggleIcon");
+            const logo = document.getElementById("sidebarLogo");
+
+            btn.addEventListener("click", () => {
+                outer.classList.toggle("expanded");
+                icon.classList.toggle("rotated");
+                logo.classList.toggle("show-text");
+                const innerContent = document.querySelector(".innerContent");
+                innerContent.classList.toggle("shifted");
+            });
+
+            // RESET PROGRESS BUTTON - FIXED VERSION
+            document.getElementById("resetProgress").addEventListener("click", () => {
+                const btn = document.getElementById("resetProgress");
+                btn.classList.add("spin");
+                setTimeout(() => btn.classList.remove("spin"), 400);
+
+                // Reset all questions
+                const questionBoxes = document.querySelectorAll(".question-box");
+                questionBoxes.forEach((box, index) => {
+                    if (box.id === "questionTemplate") return;
+                    
+                    box.classList.remove("correct", "wrong");
+                    
+                    // Reset MCQ options
+                    const optionCircles = box.querySelectorAll(".option-circle");
+                    optionCircles.forEach(circle => {
+                        circle.classList.remove("selected", "correct", "wrong");
+                    });
+                    
+                    // Reset connect questions
+                    const connectItems = box.querySelectorAll(".connect-item");
+                    if (connectItems.length > 0) {
+                        // This is a connect question
+                        if (box.resetConnectQuestion && typeof box.resetConnectQuestion === 'function') {
+                            box.resetConnectQuestion();
+                        } else {
+                            // Fallback reset
+                            connectItems.forEach(item => {
+                                item.classList.remove("selected", "correct", "wrong");
+                            });
+                        }
+                    }
+                    
+                    // Reset text areas
+                    const textareas = box.querySelectorAll("textarea");
+                    textareas.forEach(ta => ta.value = "");
+                    
+                    // Reset predicted grade panels
+                    const gradePanels = box.querySelectorAll(".predicted-grade");
+                    gradePanels.forEach(p => p.classList.remove("show"));
+                });
+
+                // Clear storage
+                if (auth.currentUser) {
+                    // For connect questions, we need to clear specific progress
+                    questionBoxes.forEach((box, index) => {
+                        if (box.id === "questionTemplate") return;
+                        const connectItems = box.querySelectorAll(".connect-item");
+                        if (connectItems.length > 0) {
+                            db.collection("userProgress").doc(auth.currentUser.uid).update({
+                                [`question-${currentTopic}-${index}`]: firebase.firestore.FieldValue.delete()
+                            });
+                        }
+                    });
+                } else {
+                    localStorage.removeItem(`progress-${currentTopic}`);
+                }
+            });
+
+            // REPORT MODAL
+            const reportModal = document.getElementById("reportModal");
+            const closeModalBtn = document.getElementById("closeModal");
+
+            document.addEventListener("click", (e) => {
+                const reportBtn = e.target.closest(".report-btn");
+                if (!reportBtn) return;
+                e.stopPropagation();
+                reportModal.style.display = "flex";
+            });
+
+            closeModalBtn.addEventListener("click", () => {
+                reportModal.style.display = "none";
+            });
+
+            reportModal.addEventListener("click", (e) => {
+                if (e.target === reportModal) {
+                    reportModal.style.display = "none";
+                }
+            });
+
+            // SPLASH SCREEN
+            window.addEventListener("load", () => {
+                setTimeout(() => {
+                    document.getElementById("splash").classList.add("hide");
+                }, 3000);
+            });
+
+            // Initialize notebook
+            initNotebook();
+        }
+
+        // ========== FILTER FUNCTIONS ==========
+        function initFilters() {
+            const boardDropdown = document.getElementById("boardDropdown");
+            const paperDropdown = document.getElementById("paperDropdown");
+            let selectedBoard = "All";
+            let selectedPaper = "All";
+
+            function setupDropdown(dropdown, callback) {
+                const btn = dropdown.querySelector(".dropdown-btn");
+                const content = dropdown.querySelector(".dropdown-content");
+
+                btn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    dropdown.classList.toggle("show");
+                });
+
+                content.querySelectorAll("button").forEach(optionBtn => {
+                    optionBtn.addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        const value = optionBtn.dataset.board || optionBtn.dataset.paper;
+                        btn.textContent = optionBtn.textContent + " ▾";
+                        dropdown.classList.remove("show");
+                        callback(value);
+                    });
+                });
+            }
+
+            setupDropdown(boardDropdown, (value) => {
+                selectedBoard = value;
+                filterQuestions(selectedBoard, selectedPaper);
+            });
+
+            setupDropdown(paperDropdown, (value) => {
+                selectedPaper = value;
+                filterQuestions(selectedBoard, selectedPaper);
+            });
+
+            window.addEventListener('click', () => {
+                boardDropdown.classList.remove("show");
+                paperDropdown.classList.remove("show");
+            });
+        }
+
+        function filterQuestions(board, paper) {
+            const questions = document.querySelectorAll(".question-box");
+            let visibleIndex = 1;
+
+            questions.forEach(q => {
+                if (q.id === "questionTemplate") return;
+
+                const tags = Array.from(q.querySelectorAll(".tag")).map(t => t.textContent);
+                const boardMatch = (board === "All") || tags.includes(board);
+                const paperMatch = (paper === "All") || tags.includes(paper);
+
+                if (boardMatch && paperMatch) {
+                    q.style.display = "block";
+                    q.querySelector(".qnum").textContent = `Question ${visibleIndex++}`;
+                } else {
+                    q.style.display = "none";
+                }
+            });
+        }
+
+        // ========== INITIALIZATION ==========
+        function initApp() {
+            initUI();
+            const topic = getTopicFromURL();
+            loadTopicScript(topic);
+        }
+
+        // Start the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
 </body>
 </html>
